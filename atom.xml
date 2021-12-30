@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-12-29T23:56:30.768Z</updated>
+  <updated>2021-12-30T00:02:41.970Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -21,9 +21,9 @@
     <link href="http://example.com/2021/12/29/hello-world/"/>
     <id>http://example.com/2021/12/29/hello-world/</id>
     <published>2021-12-29T04:53:28.888Z</published>
-    <updated>2021-12-29T23:56:30.768Z</updated>
+    <updated>2021-12-30T00:02:41.970Z</updated>
     
-    <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>正如学编程语言时首个程序是<code>Hello World!</code>一样，本blog亦是如此。</p><p>该网站旨在分享一些生活的点滴及秋招的经历：从算法、八股的准备到笔面试。最初是在微信公众号分享，奈何修改、发表过于繁琐。后来尝试过csdn，但一些不可描述的原因又将我劝退，最终决定自己搭建网站。</p><h1 id="残局"><a href="#残局" class="headerlink" title="残局"></a>残局</h1><p>endgame,残局。</p><p>csgo可谓是电子竞技中最精彩的赛事之一，他的精彩就表现在残局众多。残局，是一场比赛中最精彩、最充满期待同时也是有着最多遗憾的时刻。精彩在会有一个力挽狂澜、扭转乾坤的人出现；遗憾在纵使他的某次发挥再流传千古，可终究改变不了逆局。</p><h1 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h1><p>以下，进行代码块、公式块渲染的测试</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cout&lt;&lt;“hello world”&lt;&lt;endl;</span><br></pre></td></tr></table></figure><p>$$<br>f(x)=x^2\to \hat a<br>$$</p>]]></content>
+    <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>正如学编程语言时首个程序是<code>Hello World!</code>一样，本blog亦是如此。</p><p>该网站旨在分享一些生活的点滴及秋招的经历：从算法、八股的准备到笔面试。最初是在微信公众号分享，奈何修改、发表过于繁琐。后来尝试过csdn，但一些不可描述的原因又将我劝退，最终决定自己搭建网站。</p><h1 id="残局"><a href="#残局" class="headerlink" title="残局"></a>残局</h1><p>endgame,残局。</p><p>csgo可谓是电子竞技中最精彩的赛事之一，他的精彩就表现在残局众多。残局，是一场比赛中最精彩、最充满期待同时也是有着最多遗憾的时刻。精彩在会有一个力挽狂澜、扭转乾坤的人出现；遗憾在纵使他的某次发挥再流传千古，可终究改变不了逆局。</p><h1 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h1><p>以下，进行代码块、公式块渲染的测试</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cout&lt;&lt;“hello world”&lt;&lt;endl;</span><br></pre></td></tr></table></figure><p>$$<br>f(x)=x^2\to \hat a-x_2<br>$$</p>]]></content>
     
     
       
