@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>残局</title>
   
-  
+  <subtitle>AK-47</subtitle>
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
@@ -10,7 +10,7 @@
   <id>http://example.com/</id>
   
   <author>
-    <name>看热闹不嫌事大的热心市民</name>
+    <name>东北某卑微大学生</name>
     
   </author>
   
