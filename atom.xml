@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-01-05T00:01:41.578Z</updated>
+  <updated>2022-01-05T12:40:40.762Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>红黑树</title>
+    <link href="http://example.com/2022/01/05/%E7%BA%A2%E9%BB%91%E6%A0%91/"/>
+    <id>http://example.com/2022/01/05/%E7%BA%A2%E9%BB%91%E6%A0%91/</id>
+    <published>2022-01-05T12:37:45.000Z</published>
+    <updated>2022-01-05T12:40:40.762Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h1><p>由于二叉搜索树很不平衡，很容易退化为一条类似链表的结构，从而造成时间复杂度从$O(lgN)$降低为$O(N)$。为解决这一问题，</p><p>引入了<strong>“平衡”二叉搜索树</strong>，红黑树就是其中的一种。红黑树在树的基础上，为每个节点增加了一个<strong>颜色位</strong>，可以是<code>RED</code>，也可以是<code>BLACK</code>。通过对每条路径的颜色进行约束，保证红黑树处于<strong style="color:#e67c86;">近似平衡</strong>的状态，从而保证了查找最坏情况为$O(lgN)$。</p><span id="more"></span><h1 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h1><p>红黑树除了本身是<strong style="color:rgb(0, 191, 166);">二叉搜索树</strong>外，还满足以下条件：</p><ol><li>每个节点<strong style="color:red;">要么是红色</strong>的，<strong style="color:red;">要么是黑色</strong>的。</li><li><strong style="color:red;">根节点</strong>是<strong style="color:red;">黑色</strong>的。</li><li>每个空节点(<strong style="color:red;">NIL</strong>)都是<strong style="color:red;">黑色</strong>的。</li><li><strong style="color:red;">红色节点</strong>的两个<strong style="color:red;">子节点</strong>都是<strong style="color:red;">黑色</strong>的。</li><li><strong style="color:red;">每个节点</strong><strong>到</strong>其后代<strong style="color:red;">叶子节点</strong>的路径上包含的<strong style="color:red;">黑色节点数目相同</strong>。</li></ol><p>红黑树的定义如下：</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">RBTColor</span>&#123;</span>RED, BLACK&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> <span class="title">T</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RBTNode</span>&#123;</span></span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    T key;</span><br><span class="line">        RBTColor color;</span><br><span class="line">        RBTNode *left;</span><br><span class="line">        RBTNode *right;</span><br><span class="line">        RBTNode *parent;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure><p>样例如图：</p><p><img src="/2022/01/05/%E7%BA%A2%E9%BB%91%E6%A0%91/RedBlackTree.png" alt="RedBlackTree"></p><p>未完待续</p>]]></content>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;引入&quot;&gt;&lt;a href=&quot;#引入&quot; class=&quot;headerlink&quot; title=&quot;引入&quot;&gt;&lt;/a&gt;引入&lt;/h1&gt;&lt;p&gt;由于二叉搜索树很不平衡，很容易退化为一条类似链表的结构，从而造成时间复杂度从$O(lgN)$降低为$O(N)$。为解决这一问题，&lt;/p&gt;
+&lt;p&gt;引入了&lt;strong&gt;“平衡”二叉搜索树&lt;/strong&gt;，红黑树就是其中的一种。红黑树在树的基础上，为每个节点增加了一个&lt;strong&gt;颜色位&lt;/strong&gt;，可以是&lt;code&gt;RED&lt;/code&gt;，也可以是&lt;code&gt;BLACK&lt;/code&gt;。通过对每条路径的颜色进行约束，保证红黑树处于&lt;strong style=&quot;color:#e67c86;&quot;&gt;近似平衡&lt;/strong&gt;的状态，从而保证了查找最坏情况为$O(lgN)$。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="数据结构" scheme="http://example.com/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    
+  </entry>
   
   <entry>
     <title>左孩子右兄弟树</title>
