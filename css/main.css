@@ -1213,7 +1213,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #5344e3;
+  background: #d96665;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2510,6 +2510,7 @@ a.my-post-title-link:before {
   width: 18px;
   height: 18px;
   margin-right: 5px;
+  content: "fa fa-hand-o-right";
   font: normal normal normal 14px/1 FontAwesome;
   font-size: 15px;
   line-height: 18px;
