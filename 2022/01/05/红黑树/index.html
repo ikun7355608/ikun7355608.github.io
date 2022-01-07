@@ -28,8 +28,9 @@
 <meta property="og:description" content="引入由于二叉搜索树很不平衡，很容易退化为一条类似链表的结构，从而造成时间复杂度从$O(lgN)$降低为$O(N)$。 为解决这一问题，引入了“平衡”二叉搜索树，红黑树就是其中的一种。红黑树在树的基础上，为每个节点增加了一个颜色位，可以是RED，也可以是BLACK。通过对每条路径的颜色进行约束，保证红黑树处于近似平衡的状态，从而保证了查找最坏情况为$O(lgN)$。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2022/01/05/%E7%BA%A2%E9%BB%91%E6%A0%91/RedBlackTree.png">
+<meta property="og:image" content="http://example.com/%E7%BA%A2%E9%BB%91%E6%A0%91/RBTreeRotate.png">
 <meta property="article:published_time" content="2022-01-05T12:37:45.000Z">
-<meta property="article:modified_time" content="2022-01-05T13:02:03.591Z">
+<meta property="article:modified_time" content="2022-01-07T09:00:10.825Z">
 <meta property="article:author" content="东北某卑微大学生">
 <meta property="article:tag" content="数据结构">
 <meta name="twitter:card" content="summary">
@@ -210,10 +211,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2022-01-05 20:37:45 / 修改时间：21:02:03" itemprop="dateCreated datePublished" datetime="2022-01-05T20:37:45+08:00">2022-01-05</time>
+              <time title="创建时间：2022-01-05 20:37:45" itemprop="dateCreated datePublished" datetime="2022-01-05T20:37:45+08:00">2022-01-05</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-01-07 17:00:10" itemprop="dateModified" datetime="2022-01-07T17:00:10+08:00">2022-01-07</time>
+              </span>
 
           <br>
             <span class="post-meta-item" title="本文字数">
@@ -221,7 +228,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>473</span>
+              <span>1.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -257,6 +264,15 @@
 
 <p>样例如图：</p>
 <p><img src="/2022/01/05/%E7%BA%A2%E9%BB%91%E6%A0%91/RedBlackTree.png" alt="RedBlackTree"></p>
+<p><del>未完待续</del></p>
+<h1 id="旋转"><a href="#旋转" class="headerlink" title="旋转"></a>旋转</h1><p>由于结点的插入、删除操作对树进行了修改。修改后的红黑树可能<strong style="color:red;">不再满足</strong>上面所列出的<strong style="color:red;">红黑性质</strong>，故需要对树的某些结点进行<strong style="color:pink;">旋转</strong>或<strong style="color:pink;">变色</strong>使其自平衡。</p>
+<p>忽略红黑特性，以一个二叉搜索树为例进行演示旋转。样例如下：</p>
+<p><img src="/%E7%BA%A2%E9%BB%91%E6%A0%91/RBTreeRotate.png" alt="红黑树旋转"></p>
+<p>图中<code>x y</code>是两个节点，<code>a b c</code>表示任意子树。</p>
+<p>不难看出，图中的旋转仍然保持了二叉搜索树的性质：a子树所有节点的key值小于<code>x.key</code>;c子树所有节点的key值大于<code>y.key</code>;b子树key值介于<code>x.key</code>与<code>y.key</code>之间。伪代码如下</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//左旋</span></span><br><span class="line">y = x.right					</span><br><span class="line">x.right = y.left			<span class="comment">//上图中，b子树的移动</span></span><br><span class="line"><span class="keyword">if</span> y.left != <span class="literal">nullptr</span></span><br><span class="line">    y.left.parent = x		<span class="comment">//过继过去的b子树父节点改变</span></span><br><span class="line">y.parent = x.parent</span><br><span class="line">    <span class="comment">//改变x的父节点的指向</span></span><br><span class="line"><span class="keyword">if</span> x.parent == <span class="literal">nullptr</span></span><br><span class="line">    T.root = y				<span class="comment">//x父节点为空，证明x为根节点 即左旋后的y节点变为根节点</span></span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> x == x.parent.left</span><br><span class="line">    x.parent.left = x</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    x.parent.right = y</span><br><span class="line">y.left = x					<span class="comment">//将x链接在y的左侧</span></span><br><span class="line">x.parent = y</span><br><span class="line"></span><br><span class="line"><span class="comment">//右旋</span></span><br><span class="line">x = y.left</span><br><span class="line">y.left = x.right</span><br><span class="line"><span class="keyword">if</span> x.right != <span class="literal">nullptr</span></span><br><span class="line">	x.right.parent = y</span><br><span class="line">x.parent = y.parent</span><br><span class="line"><span class="keyword">if</span> y.parent == <span class="literal">nullptr</span></span><br><span class="line">    T.root = x</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> y == y.parent.left</span><br><span class="line">    y.parent.left = x</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    y.parent.right = x</span><br><span class="line">x.right = y</span><br><span class="line">y.parent = x</span><br></pre></td></tr></table></figure>
+
+<p>旋转操作只改变所旋转元素附近的指针，其他属性均未改变。可以在常数时间$O(1)$内完成。</p>
 <p>未完待续</p>
 
     </div>
@@ -347,7 +363,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%95%E5%85%A5"><span class="nav-text">引入</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%B9%E6%80%A7"><span class="nav-text">特性</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%95%E5%85%A5"><span class="nav-text">引入</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%B9%E6%80%A7"><span class="nav-text">特性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC"><span class="nav-text">旋转</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -415,7 +431,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">3k</span>
+    <span title="站点总字数">4k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
