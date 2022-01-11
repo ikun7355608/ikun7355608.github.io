@@ -31,8 +31,13 @@
 <meta property="og:image" content="http://example.com/2022/01/05/%E7%BA%A2%E9%BB%91%E6%A0%91/RBTreeRotate.png">
 <meta property="og:image" content="http://example.com/2022/01/05/%E7%BA%A2%E9%BB%91%E6%A0%91/RBTreeInsert.png">
 <meta property="og:image" content="http://example.com/2022/01/05/%E7%BA%A2%E9%BB%91%E6%A0%91/RBTreeInsertExp.png">
+<meta property="og:image" content="http://example.com/2022/01/05/%E7%BA%A2%E9%BB%91%E6%A0%91/RBTreeDelete.png">
+<meta property="og:image" content="http://example.com/2022/01/05/%E7%BA%A2%E9%BB%91%E6%A0%91/RBTreeDeleteExp1.png">
+<meta property="og:image" content="http://example.com/2022/01/05/%E7%BA%A2%E9%BB%91%E6%A0%91/RBTreeDeleteExp2.png">
+<meta property="og:image" content="http://example.com/2022/01/05/%E7%BA%A2%E9%BB%91%E6%A0%91/RBTreeDeleteExp3.png">
+<meta property="og:image" content="http://example.com/2022/01/05/%E7%BA%A2%E9%BB%91%E6%A0%91/RBTreeDeleteExp4.png">
 <meta property="article:published_time" content="2022-01-05T12:37:45.000Z">
-<meta property="article:modified_time" content="2022-01-08T11:20:02.091Z">
+<meta property="article:modified_time" content="2022-01-11T13:50:24.068Z">
 <meta property="article:author" content="东北某卑微大学生">
 <meta property="article:tag" content="数据结构">
 <meta name="twitter:card" content="summary">
@@ -221,7 +226,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-01-08 19:20:02" itemprop="dateModified" datetime="2022-01-08T19:20:02+08:00">2022-01-08</time>
+                <time title="修改时间：2022-01-11 21:50:24" itemprop="dateModified" datetime="2022-01-11T21:50:24+08:00">2022-01-11</time>
               </span>
 
           <br>
@@ -230,14 +235,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.6k</span>
+              <span>4.1k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
+              <span>4 分钟</span>
             </span>
 
         </div>
@@ -293,7 +298,44 @@
 <li>循环退出后，将其<strong style="color:red;">根节点染成黑色</strong>。</li>
 </ol>
 <p>调整方案对应的伪代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> x.parent.color == RED		<span class="comment">// 1</span></span><br><span class="line">    <span class="keyword">if</span> x.parent == x.parent.parent.left</span><br><span class="line">        y = x.parent.parent.right	<span class="comment">//叔节点</span></span><br><span class="line">        <span class="keyword">if</span> y.color == RED		<span class="comment">//1.2</span></span><br><span class="line">            x.parent.color = BLACK</span><br><span class="line">            y.color = BLACK</span><br><span class="line">            x.parent.parent.color = RED</span><br><span class="line">            x = x.parent.parent</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">if</span> x == x.parent.right	<span class="comment">//1.1.1.1</span></span><br><span class="line">                <span class="comment">//父节点左旋并置为当前</span></span><br><span class="line">                x = x.parent</span><br><span class="line">                LEFT-<span class="built_in">ROTATE</span>(T, x)</span><br><span class="line">            <span class="comment">//1.1.1.2</span></span><br><span class="line">            x.parent.color = BLACK</span><br><span class="line">            x.parent.parent.color = RED</span><br><span class="line">            RIGHT-<span class="built_in">ROTATE</span>(T, x.parent.parent)</span><br><span class="line">    <span class="comment">//父节点为右</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        y = x.parent.parent.left</span><br><span class="line">        <span class="keyword">if</span> y.color == RED</span><br><span class="line">            x.parent.color = BLACK</span><br><span class="line">            y.color = BLACK</span><br><span class="line">            x.parent.parent.color = RED</span><br><span class="line">            x = x.parent.parent</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">if</span> x == x.parent.left <span class="comment">//1.1.2.2</span></span><br><span class="line">                x = x.parent</span><br><span class="line">                RIGHT-<span class="built_in">ROTATE</span>(T, x)</span><br><span class="line">            <span class="comment">//1.1.2.1</span></span><br><span class="line">                x.parent.color = BLACK</span><br><span class="line">                x.parent.parent.color = RED</span><br><span class="line">                LEFT-<span class="built_in">ROTATE</span>(T, x.parent.parent)</span><br><span class="line">T.root.color = BLACK</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> x.parent.color == RED		<span class="comment">// 1</span></span><br><span class="line">    <span class="keyword">if</span> x.parent == x.parent.parent.left</span><br><span class="line">        y = x.parent.parent.right	<span class="comment">//叔节点</span></span><br><span class="line">        <span class="keyword">if</span> y.color == RED		<span class="comment">//1.2</span></span><br><span class="line">            x.parent.color = BLACK</span><br><span class="line">            y.color = BLACK</span><br><span class="line">            x.parent.parent.color = RED</span><br><span class="line">            x = x.parent.parent</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">if</span> x == x.parent.right	<span class="comment">//1.1.1.1</span></span><br><span class="line">                <span class="comment">//父节点左旋并置为当前</span></span><br><span class="line">                x = x.parent</span><br><span class="line">                LEFT-<span class="built_in">ROTATE</span>(T, x)</span><br><span class="line">            <span class="comment">//1.1.1.2</span></span><br><span class="line">            x.parent.color = BLACK</span><br><span class="line">            x.parent.parent.color = RED</span><br><span class="line">            RIGHT-<span class="built_in">ROTATE</span>(T, x.parent.parent)</span><br><span class="line">    <span class="comment">//父节点为右</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        y = x.parent.parent.left</span><br><span class="line">        <span class="keyword">if</span> y.color == RED</span><br><span class="line">            x.parent.color = BLACK</span><br><span class="line">            y.color = BLACK</span><br><span class="line">            x.parent.parent.color = RED</span><br><span class="line">            x = x.parent.parent</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">if</span> x == x.parent.left <span class="comment">//1.1.2.2</span></span><br><span class="line">                x = x.parent</span><br><span class="line">                RIGHT-<span class="built_in">ROTATE</span>(T, x)</span><br><span class="line">            <span class="comment">//1.1.2.1</span></span><br><span class="line">            x.parent.color = BLACK</span><br><span class="line">            x.parent.parent.color = RED</span><br><span class="line">            LEFT-<span class="built_in">ROTATE</span>(T, x.parent.parent)</span><br><span class="line">T.root.color = BLACK</span><br></pre></td></tr></table></figure>
+
+<h2 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h2><p>删除和插入操作类似，也分为两个步骤：</p>
+<ol>
+<li>红黑树本身是一个<strong>二叉搜索树</strong>，根据其性质<strong style="color:red;">寻找到对应节点并删除</strong>掉。删除的情况如下<ul>
+<li>若该节点是<strong style="color:red;">叶子节点</strong>，则<strong>直接删除</strong>。</li>
+<li>若<strong style="color:red;">只有一个子树</strong>，则用子树<strong>替代当前节点</strong>。</li>
+<li>若<strong style="color:red;">有两个子树</strong>，则用<strong>右子树的最小值</strong>(大于被删除元素的最小值)替代当前节点。</li>
+</ul>
+</li>
+<li>通过旋转、着色等操作将红黑树修正，使之成为新的红黑树。</li>
+</ol>
+<p>根据所替代节点的相关信息来进行调整：</p>
+<p><img src="/2022/01/05/%E7%BA%A2%E9%BB%91%E6%A0%91/RBTreeDelete.png" alt="RBTreeDelete"></p>
+<p>同样的，在循环调整之后，将当前节点染成黑色。</p>
+<p>下面给出几个具体样例进行分析：</p>
+<ul>
+<li><p>例一</p>
+<p><img src="/2022/01/05/%E7%BA%A2%E9%BB%91%E6%A0%91/RBTreeDeleteExp1.png" alt="RBTreeDeleteExp1"></p>
+<p>在该样例中，A<strong>节点为黑色</strong>，且是其<strong>父节点的左节点</strong>，<strong>兄弟节点D为红色</strong>，满足调整方案1.1.1。所做出的调整为将其父节点<code>B</code>染成红色，兄弟节点<code>D</code>染成黑色。然后将其父节点<code>B</code>进行左旋。此后均满足条件。</p>
+</li>
+<li><p>例二</p>
+<p><img src="/2022/01/05/%E7%BA%A2%E9%BB%91%E6%A0%91/RBTreeDeleteExp2.png" alt="RBTreeDeleteExp2"></p>
+<p>在该样例中，A<strong>节点为黑色</strong>，且是其<strong>父节点的左节点</strong>，<strong>兄弟节点D为黑色</strong>，两个<strong>侄子节点</strong><code>C</code>和<code>E</code><strong>均为黑色</strong>，满足调整方案1.1.2.1。调整时，将其兄弟结点<code>D</code>染成红色，<code>x</code>已上移为根节点<code>B</code>，循环结束。需要特别注意的是，此刻应再将节点<code>B</code>染成黑色。</p>
+</li>
+<li><p>例三</p>
+<p><img src="/2022/01/05/%E7%BA%A2%E9%BB%91%E6%A0%91/RBTreeDeleteExp3.png" alt="RBTreeDeleteExp3"></p>
+<p>在该样例中，A<strong>节点为黑色</strong>，且是其<strong>父节点的左节点</strong>，<strong>兄弟节点D为黑色</strong>，左侄子<code>C</code>为红色,右侄子<code>E</code>为黑色，满足调整方案1.1.2.2。调整时，将其左侄子<code>C</code>染成黑色，兄弟节点<code>D</code>染成红色，并将兄弟节点D右旋，然后再按照调整方案1.1.2.3进行调整，在此略过。</p>
+</li>
+<li><p>例四</p>
+<p><img src="/2022/01/05/%E7%BA%A2%E9%BB%91%E6%A0%91/RBTreeDeleteExp4.png" alt="RBTreeDeleteExp4"></p>
+<p>在该样例中，A<strong>节点为黑色</strong>，且是其<strong>父节点的左节点</strong>，<strong>兄弟节点D为黑色</strong>，右侄子<code>E</code>为红色，满足调整方案1.1.2.3。调整时，兄弟节点<code>D</code>颜色随父节点<code>B</code>，右侄子<code>E</code>和父节点<code>B</code>染成黑色，将父节点<code>B</code>左旋。</p>
+</li>
+</ul>
+<p>调整方案对应伪代码如下:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> x != T.root <span class="keyword">and</span> x.color == BLACK</span><br><span class="line">	<span class="keyword">if</span> x == x.parent.left</span><br><span class="line">		w = x.parent.right			<span class="comment">//兄弟节点</span></span><br><span class="line">		<span class="keyword">if</span> w.color == RED			<span class="comment">// 1.1.1</span></span><br><span class="line">            w.color = BLACK</span><br><span class="line">            x.parent.color = RED</span><br><span class="line">            LEFT-<span class="built_in">ROTATE</span>(T, x.parent)</span><br><span class="line">            w = x.parent.right</span><br><span class="line">        <span class="keyword">if</span> w.left.color == BLACK <span class="keyword">and</span> w.right.color == BLACK		<span class="comment">//1.1.2.1</span></span><br><span class="line">            w.color = RED</span><br><span class="line">            x = x.parent</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">if</span> w.right.color == BLACK						<span class="comment">//1.1.2.2</span></span><br><span class="line">            	w.left.color = BLACK</span><br><span class="line">                w.color = RED</span><br><span class="line">                RIGHT-<span class="built_in">ROTATE</span>(T, w)</span><br><span class="line">               	w = x.parent.right</span><br><span class="line">            w.color = x.parent.color	<span class="comment">//1.1.2.3</span></span><br><span class="line">            x.parent.color = BLACK</span><br><span class="line">            w.right.color = BLACK</span><br><span class="line">            LEFT-<span class="built_in">ROTATE</span>(T, x.parent)</span><br><span class="line">            x = T.root</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        w = x.parent.left</span><br><span class="line">        <span class="keyword">if</span> w.color == RED		<span class="comment">//1.2.2</span></span><br><span class="line">            w.color = BLACK</span><br><span class="line">            x.parent.color = RED</span><br><span class="line">            RIGHT-<span class="built_in">ROTATE</span>(T, x.parent)</span><br><span class="line">            w = x.parent.left</span><br><span class="line">        <span class="keyword">if</span> w.right.color == BLACK <span class="keyword">and</span> w.left.color == BLACK	<span class="comment">//1.2.1.1</span></span><br><span class="line">            w.color =RED</span><br><span class="line">            x = x.parent</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">if</span> w.left.color == BLACK	<span class="comment">//1.2.1.2</span></span><br><span class="line">                w.right.color = BLACK</span><br><span class="line">                w.color = RED</span><br><span class="line">                LEFT-<span class="built_in">ROTATE</span>(T, w)</span><br><span class="line">            w.color = x.parent.color	<span class="comment">//1.2.1.3</span></span><br><span class="line">            x.parent.color = BLACK</span><br><span class="line">            w.left.color = BLACK</span><br><span class="line">		   RIGHT-<span class="built_in">ROTATE</span>(T, x.parent)</span><br><span class="line">            x = T.root</span><br><span class="line">x.color = BLACK</span><br></pre></td></tr></table></figure>
+
+
 
 
     </div>
@@ -384,7 +426,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%95%E5%85%A5"><span class="nav-text">引入</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%B9%E6%80%A7"><span class="nav-text">特性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%97%E6%B3%95"><span class="nav-text">算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC"><span class="nav-text">旋转</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%92%E5%85%A5"><span class="nav-text">插入</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%95%E5%85%A5"><span class="nav-text">引入</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%B9%E6%80%A7"><span class="nav-text">特性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%97%E6%B3%95"><span class="nav-text">算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC"><span class="nav-text">旋转</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%92%E5%85%A5"><span class="nav-text">插入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4"><span class="nav-text">删除</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -452,12 +494,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">5k</span>
+    <span title="站点总字数">7k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5 分钟</span>
+    <span title="站点阅读时长">6 分钟</span>
 <div>
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <span id="busuanzi_container_site_uv" style='display:none'>
