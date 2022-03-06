@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-01-21T06:34:08.339Z</updated>
+  <updated>2022-03-06T13:20:51.637Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>占坑</title>
+    <link href="http://example.com/2022/03/06/%E5%8D%A0%E5%9D%91/"/>
+    <id>http://example.com/2022/03/06/%E5%8D%A0%E5%9D%91/</id>
+    <published>2022-03-06T13:16:27.000Z</published>
+    <updated>2022-03-06T13:20:51.637Z</updated>
+    
+    <content type="html"><![CDATA[<p>寒假在家一直在摸鱼。刚开学又有个实验，周四就要验收了。占个坑，继续鸽。（这周看了二百来页<strong>帅地玩编程</strong>的《程序员内功修炼》）继续抓包。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;寒假在家一直在摸鱼。刚开学又有个实验，周四就要验收了。占个坑，继续鸽。（这周看了二百来页&lt;strong&gt;帅地玩编程&lt;/strong&gt;的《程序员内功修炼》）继续抓包。&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>动态规划</title>
