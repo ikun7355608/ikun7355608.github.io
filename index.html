@@ -318,7 +318,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/06/%E5%8D%A0%E5%9D%91/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/06/B%E6%A0%91/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -332,7 +332,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/03/06/%E5%8D%A0%E5%9D%91/" class="post-title-link" itemprop="url">占坑</a>
+            <a href="/2022/03/06/B%E6%A0%91/" class="post-title-link" itemprop="url">B树</a>
         </h2>
 
         <div class="post-meta">
@@ -341,10 +341,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2022-03-06 21:16:27 / 修改时间：21:20:51" itemprop="dateCreated datePublished" datetime="2022-03-06T21:16:27+08:00">2022-03-06</time>
+              <time title="创建时间：2022-03-06 21:16:27" itemprop="dateCreated datePublished" datetime="2022-03-06T21:16:27+08:00">2022-03-06</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-04-01 17:20:49" itemprop="dateModified" datetime="2022-04-01T17:20:49+08:00">2022-04-01</time>
+              </span>
 
           <br>
             <span class="post-meta-item" title="本文字数">
@@ -352,7 +358,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>65</span>
+              <span>1.5k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -371,8 +377,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>寒假在家一直在摸鱼。刚开学又有个实验，周四就要验收了。占个坑，继续鸽。（这周看了二百来页<strong>帅地玩编程</strong>的《程序员内功修炼》）继续抓包。</p>
-
+          <p>AVL 树 和红黑树，都假设所有的数据放在主存当中。而当数据量达到亿级，主存当中根本存储不下，我们只能以块的形式从磁盘读取数据，与主存的访问时间相比，磁盘的 I/O 操作相当耗时，而提出 B-树的主要目的就是减少磁盘的 I/O 操作。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/03/06/B%E6%A0%91/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -784,12 +797,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">9k</span>
+    <span title="站点总字数">11k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">8 分钟</span>
+    <span title="站点阅读时长">10 分钟</span>
 <div>
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <span id="busuanzi_container_site_uv" style='display:none'>
