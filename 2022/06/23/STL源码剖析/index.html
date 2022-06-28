@@ -32,7 +32,7 @@
 <meta property="og:image" content="http://example.com/2022/06/23/STL%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/image-20220611144437337.png">
 <meta property="og:image" content="http://example.com/2022/06/23/STL%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/transfer.png">
 <meta property="article:published_time" content="2022-06-23T07:06:55.000Z">
-<meta property="article:modified_time" content="2022-06-28T09:31:28.870Z">
+<meta property="article:modified_time" content="2022-06-28T09:46:33.039Z">
 <meta property="article:author" content="东北某卑微大学生">
 <meta property="article:tag" content="候捷">
 <meta name="twitter:card" content="summary">
@@ -221,7 +221,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-06-28 17:31:28" itemprop="dateModified" datetime="2022-06-28T17:31:28+08:00">2022-06-28</time>
+                <time title="修改时间：2022-06-28 17:46:33" itemprop="dateModified" datetime="2022-06-28T17:46:33+08:00">2022-06-28</time>
               </span>
 
           <br>
@@ -343,7 +343,7 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">self&amp; <span class="keyword">operator</span>+=(difference_type n) &#123;</span><br><span class="line">    difference_type offset = n + (cur - first);</span><br><span class="line">    <span class="comment">// 不跨越缓冲区</span></span><br><span class="line">    <span class="keyword">if</span> (offset &gt;= <span class="number">0</span> &amp;&amp; offset &lt; <span class="built_in">difference_type</span>(<span class="built_in">buffer_size</span>())) &#123;</span><br><span class="line">        cur += n;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123; <span class="comment">//跨区</span></span><br><span class="line">        difference_type node_offset = offset &gt; <span class="number">0</span> ? offset / <span class="built_in">difference_type</span>(<span class="built_in">buffer_size</span>()) : -<span class="built_in">difference_type</span>((-offset - <span class="number">1</span>) / <span class="built_in">buffer_size</span>()) - <span class="number">1</span>;</span><br><span class="line">        <span class="built_in">set_node</span>(node + node_offset);</span><br><span class="line">        cur = first + (offset - node_offset * <span class="built_in">difference_type</span>(<span class="built_in">buffer_size</span>()));</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">        三目运算符 </span></span><br><span class="line"><span class="comment">        true选项 offset / difference_type(buffer_size()) 正向 延伸 （+=）</span></span><br><span class="line"><span class="comment">        false选项 -difference_type((-offset - 1) / buffer_size()) - 1 反向延伸 (-=)</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line">self <span class="keyword">operator</span>+(difference_type n) <span class="keyword">const</span> &#123;</span><br><span class="line">    self tmp = *<span class="keyword">this</span>;</span><br><span class="line">    <span class="keyword">return</span> tmp += n;</span><br><span class="line">&#125;</span><br><span class="line">self &amp;<span class="keyword">operator</span>-=(different_type n) &#123;</span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span> += -n;</span><br><span class="line">&#125;</span><br><span class="line">self <span class="keyword">operator</span>-(different_type n) <span class="keyword">const</span> &#123;</span><br><span class="line">    self tmp = *<span class="keyword">this</span>;</span><br><span class="line">    <span class="keyword">return</span> tmp -= n;</span><br><span class="line">&#125;</span><br><span class="line">reference <span class="keyword">operator</span>[] (different_type n) <span class="keyword">const</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> *(*<span class="keyword">this</span> + n);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h5 id="stack-queue"><a href="#stack-queue" class="headerlink" title="stack/queue"></a>stack/queue</h5><p>底层容器可以是deque/list。此外，stack还可以选择vector作底层容器。<strong>默认</strong>是<code>deque</code>，在此基础上封装，调用<code>deque</code>去实现。</p>
-<p>stack/queue不提供iterator，==不允许遍历==。</p>
+<p>stack/queue不提供iterator，<mark>不允许遍历</mark>。</p>
 <h4 id="RB-tree"><a href="#RB-tree" class="headerlink" title="RB_tree"></a>RB_tree</h4><ul>
 <li><p>自平衡二叉搜索树。数据排列规则有利于<strong>插入</strong>和<strong>查找</strong>；</p>
 </li>
@@ -377,7 +377,7 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> <span class="title">Key</span>,</span></span><br><span class="line"><span class="class">          <span class="keyword">class</span> <span class="title">T</span>,</span></span><br><span class="line"><span class="class">          <span class="keyword">class</span> <span class="title">Compare</span> =</span> less&lt;Key&gt;,</span><br><span class="line">          <span class="class"><span class="keyword">class</span> <span class="title">Alloc</span> =</span> alloc&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">map</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// typedefs</span></span><br><span class="line">    <span class="keyword">typedef</span> Key key_type;</span><br><span class="line">    <span class="keyword">typedef</span> T data_type;</span><br><span class="line">    <span class="keyword">typedef</span> T mapped_type;</span><br><span class="line">    <span class="keyword">typedef</span> pair&lt;<span class="keyword">const</span> Key, T&gt; value_type;</span><br><span class="line">    <span class="keyword">typedef</span> Compare key_compare;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">typedef</span> rb_tree&lt;key_type, value_type, select1st&lt;value_type&gt;, key_compare, Alloc&gt; rep_type;</span><br><span class="line">    rep_type t;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">typedef</span> <span class="keyword">typename</span> rep_type::iterator iterator;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 <h4 id="hashtable"><a href="#hashtable" class="headerlink" title="hashtable"></a>hashtable</h4><ul>
-<li><p>哈希冲突时再哈希时间复杂度过高，采用==链式==存储解决此问题。</p>
+<li><p>哈希冲突时再哈希时间复杂度过高，采用<mark>链式</mark>存储解决此问题。</p>
 </li>
 <li><p>每个<code>Hash(x)</code>值为一个<code>bucket</code>。</p>
 </li>
@@ -408,7 +408,7 @@
 <li>逻辑运算类：logical_and</li>
 <li>相对关系类：equal_to、less</li>
 </ul>
-<p><code>GNU C++</code>（GCC）有一些独有的仿函数：identity、select1st、select2nd。（==非标准库==）</p>
+<p><code>GNU C++</code>（GCC）有一些独有的仿函数：identity、select1st、select2nd。（<mark>非标准库</mark>）</p>
 <h3 id="Adapter"><a href="#Adapter" class="headerlink" title="Adapter"></a>Adapter</h3><p>适配器、改造器。可分为容器适配器、迭代器适配器、仿函数适配器。修改一些对外的接口，使得相应的组件能够适配。</p>
 <blockquote>
 <p>仿函数适配器</p>
@@ -480,7 +480,7 @@
 <p>使用场景：移动构造函数、移动赋值、swap()、析构函数。</p>
 </blockquote>
 <ul>
-<li>==默认==的构造函数、拷贝构造函数、赋值、移动构造、移动赋值均为<code>noexcept</code>。</li>
+<li><mark>默认</mark>的构造函数、拷贝构造函数、赋值、移动构造、移动赋值均为<code>noexcept</code>。</li>
 <li>c++11仍保留throw()，实现和<code>noexcept</code>类似功能（但throw不会针对编译器优化），但在c++20已删除。</li>
 </ul>
 <h3 id="explicit"><a href="#explicit" class="headerlink" title="explicit"></a>explicit</h3><p><code>explicit</code>关键字用于构造函数之前，默认关闭了隐式类型转换。</p>
@@ -491,7 +491,7 @@
 <h3 id="max-size"><a href="#max-size" class="headerlink" title="max_size()"></a>max_size()</h3><p><code>max_size()</code>函数如下：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">size_type <span class="title">max_size</span><span class="params">()</span> <span class="keyword">const</span></span></span><br><span class="line"><span class="function">  </span>&#123; <span class="keyword">return</span> <span class="built_in">size_type</span>(<span class="number">-1</span>) / <span class="built_in"><span class="keyword">sizeof</span></span>(_Tp); &#125;</span><br></pre></td></tr></table></figure>
 
-<p>由源码可以知道，size_type为无符号整形。而<code>-1</code>我们知道其二进制补码为==全1==。<code>size_type(-1)</code>将其强制类型转换为无符号整形的最大值(==全1==)，即表示最大值$2^{32/64}$。然后对应的除以一个元素所占大小，即得出最大存放元素数量。</p>
+<p>由源码可以知道，size_type为无符号整形。而<code>-1</code>我们知道其二进制补码为<mark>全1</mark>。<code>size_type(-1)</code>将其强制类型转换为无符号整形的最大值(<mark>全1</mark>)，即表示最大值$2^{32/64}$。然后对应的除以一个元素所占大小，即得出最大存放元素数量。</p>
 <p>根据操作系统的位数自由推断所能存储的最大元素数量。</p>
 <h3 id="copy"><a href="#copy" class="headerlink" title="copy()"></a>copy()</h3><p>这里所写的<code>copy(iter it1,iter it2,iter it3)</code>函数是将<code>vector</code>的拷贝赋值<code>=</code>，目的地址所存在的元素数多于要插入的元素时的状况：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;_Tp,_Alloc&gt;::<span class="keyword">operator</span>=(<span class="keyword">const</span> vector&lt;_Tp, _Alloc&gt;&amp; __x)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">if</span> (&amp;__x != <span class="keyword">this</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> size_type __xlen = __x.<span class="built_in">size</span>();</span><br><span class="line">    <span class="keyword">if</span> (__xlen &gt; <span class="built_in">capacity</span>()) &#123;</span><br><span class="line">        ......</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">size</span>() &gt;= __xlen) &#123;</span><br><span class="line">      iterator __i = <span class="built_in">copy</span>(__x.<span class="built_in">begin</span>(), __x.<span class="built_in">end</span>(), <span class="built_in">begin</span>());</span><br><span class="line">      <span class="built_in">destroy</span>(__i, _M_finish);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        ......</span><br><span class="line">    &#125;</span><br><span class="line">    _M_finish = _M_start + __xlen;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -521,7 +521,7 @@
 <p>可以看出，每个<code>bit_vector</code>由一个<code>unsigned int*</code>和两个<code>iterator</code>组成，而一个<code>bit_iterator</code>由<code>unsigned int*</code>和<code>unsigned int</code>组成，占大小<code>20Bytes</code></p>
 <p>与<code>bit_iterator</code>相关联的两个函数<code>_M_bump_down</code>和<code>_M_bump_up</code>用来进行移位。基于这两个函数还重写了<code>++ --</code>运算符</p>
 <h4 id="flip"><a href="#flip" class="headerlink" title="flip()"></a>flip()</h4><p>所有元素取反。(<code>true-&gt;false</code>,<code>false-&gt;true</code>)</p>
-<h2 id="list-2"><a href="#list-2" class="headerlink" title="list"></a>list</h2><h3 id="begin-end"><a href="#begin-end" class="headerlink" title="begin()/end()"></a>begin()/end()</h3><p>双向链表底层存放的是虚拟头部(<code>_M_head</code>)，begin()函数返回的是<code>_M_head-&gt;_M_next</code>。而双向链表涉及的是==循环==结构，尾结点的next指针指向虚拟头部。end()函数返回尾结点的下一个元素，即<code>_M_head</code>。</p>
+<h2 id="list-2"><a href="#list-2" class="headerlink" title="list"></a>list</h2><h3 id="begin-end"><a href="#begin-end" class="headerlink" title="begin()/end()"></a>begin()/end()</h3><p>双向链表底层存放的是虚拟头部(<code>_M_head</code>)，begin()函数返回的是<code>_M_head-&gt;_M_next</code>。而双向链表涉及的是<mark>循环</mark>结构，尾结点的next指针指向虚拟头部。end()函数返回尾结点的下一个元素，即<code>_M_head</code>。</p>
 <h3 id="transfer"><a href="#transfer" class="headerlink" title="transfer()"></a>transfer()</h3><p>list中存在一个<code>transfer(iter postion,iter first,iter last)</code>函数。用于将$\left[first,last\right)$元素移动到<code>position</code>之前。</p>
 <p>源码如下:</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">transfer</span><span class="params">(iterator __position, iterator __first, iterator __last)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (__position != __last) &#123;</span><br><span class="line">    <span class="comment">// Remove [first, last) from its old position.</span></span><br><span class="line">      <span class="comment">//改正序遍历指针</span></span><br><span class="line">    __last._M_node-&gt;_M_prev-&gt;_M_next     = __position._M_node;</span><br><span class="line">    __first._M_node-&gt;_M_prev-&gt;_M_next    = __last._M_node;</span><br><span class="line">    __position._M_node-&gt;_M_prev-&gt;_M_next = __first._M_node; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Splice [first, last) into its new position.</span></span><br><span class="line">      <span class="comment">//改逆序遍历指针</span></span><br><span class="line">    _List_node_base* __tmp      = __position._M_node-&gt;_M_prev;</span><br><span class="line">    __position._M_node-&gt;_M_prev = __last._M_node-&gt;_M_prev;</span><br><span class="line">    __last._M_node-&gt;_M_prev     = __first._M_node-&gt;_M_prev; </span><br><span class="line">    __first._M_node-&gt;_M_prev    = __tmp;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -531,7 +531,7 @@
 </blockquote>
 <p><img src="/2022/06/23/STL%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/transfer.png" alt="transfer"></p>
 <h3 id="splice"><a href="#splice" class="headerlink" title="splice()"></a>splice()</h3><p><code>splice()</code>底层是调用<code>transfer()</code>，将元素(结点、<code>list</code>、起止迭代器)插入到指定位置(<code>position</code>)之前。</p>
-<h3 id="unique"><a href="#unique" class="headerlink" title="unique()"></a>unique()</h3><p>删除==连续==的相同元素（保证唯一）。</p>
+<h3 id="unique"><a href="#unique" class="headerlink" title="unique()"></a>unique()</h3><p>删除<mark>连续</mark>的相同元素（保证唯一）。</p>
 <h3 id="merge"><a href="#merge" class="headerlink" title="merge()"></a>merge()</h3><ul>
 <li><p>将另一个链表<code>list2</code>合并到该链表上。</p>
 </li>
@@ -547,7 +547,7 @@
 <li> fill —- counter数组中最深层的层数</li>
 </ul>
 <h2 id="slist"><a href="#slist" class="headerlink" title="slist"></a>slist</h2><p>slist、forward_list。单向链表。仅有一个虚拟头部，指向实际链表头</p>
-<h3 id="slist-splice-after"><a href="#slist-splice-after" class="headerlink" title="__slist_splice_after()"></a>__slist_splice_after()</h3><p>_Slist_node_base == A</p>
+<h3 id="slist-splice-after"><a href="#slist-splice-after" class="headerlink" title="__slist_splice_after()"></a>__slist_splice_after()</h3><p><code>_Slist_node_base == A</code></p>
 <ul>
 <li><code>__slist_splice_after(A* pos,A* first,A*last)</code>将$\left(first,last\right]$中的数据移动到<code>pos</code>之后</li>
 <li><code>__slist_splice_after(A* pos,A* node)</code>将$\left(node,\infty\right)$移动到<code>pos</code>之后。（node之后所有元素）</li>
@@ -560,7 +560,7 @@
 <li>单向链表的底层仅存在一个虚拟头部(<code>_M_head</code>)指向真正链表的头，begin()函数返回的是<code>_M_head-&gt;_M_next</code></li>
 <li>由于end()应指向最后一个元素的下一个元素(<code>nullptr</code>)，而单链表只能单向访问，直接<code>return nullptr</code></li>
 </ul>
-<h3 id="push-pop"><a href="#push-pop" class="headerlink" title="push/pop"></a>push/pop</h3><p>单链表插入/删除元素是在==头部==进行操作。故，push/pop函数为<code>push_front()/pop_front()</code>，插入/弹出虚拟头部的后一个位置。</p>
+<h3 id="push-pop"><a href="#push-pop" class="headerlink" title="push/pop"></a>push/pop</h3><p>单链表插入/删除元素是在<mark>头部</mark>进行操作。故，push/pop函数为<code>push_front()/pop_front()</code>，插入/弹出虚拟头部的后一个位置。</p>
 <h3 id="previous"><a href="#previous" class="headerlink" title="previous()"></a>previous()</h3><p><code>previous(iterator pos)</code>返回<code>pos</code>位置的前一个元素。</p>
 
     </div>
