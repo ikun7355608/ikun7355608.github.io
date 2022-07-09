@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文是在阅读SGI STL v3.3源码中关于algorithm部分，遇到的一些问题及有意思的点。 未完待续">
+<meta property="og:type" content="article">
+<meta property="og:title" content="STL源码-算法">
+<meta property="og:url" content="http://example.com/2022/07/09/STL%E6%BA%90%E7%A0%81-%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="残局">
+<meta property="og:description" content="本文是在阅读SGI STL v3.3源码中关于algorithm部分，遇到的一些问题及有意思的点。 未完待续">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-07-09T09:41:29.000Z">
+<meta property="article:modified_time" content="2022-07-09T09:43:30.077Z">
+<meta property="article:author" content="东北某卑微大学生">
+<meta property="article:tag" content="SGI_STL">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2022/07/09/STL%E6%BA%90%E7%A0%81-%E7%AE%97%E6%B3%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>STL源码-算法 | 残局</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="残局" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">残局</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">一想到我是个废物，一切问题都迎刃而解了。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/09/STL%E6%BA%90%E7%A0%81-%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="东北某卑微大学生">
+      <meta itemprop="description" content="活着">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="残局">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          STL源码-算法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-07-09 17:41:29 / 修改时间：17:43:30" itemprop="dateCreated datePublished" datetime="2022-07-09T17:41:29+08:00">2022-07-09</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>11k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>10 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文是在阅读SGI STL v3.3源码中关于<code>algorithm</code>部分，遇到的一些问题及有意思的点。</p>
+<p>未完待续</p>
+<span id="more"></span>
+
+<h2 id="algorithm"><a href="#algorithm" class="headerlink" title="algorithm"></a>algorithm</h2><p>从实现角度看，STL算法实质上也是一种模板类。</p>
+<p>STL中所有的算法前两个参数都是一对迭代器，所包含的元素都是左闭右开$\left[first,last\right)$</p>
+<p>最后一个可选参数一般都是自定义规则（仿函数传入点），鉴于仿函数(<code> _Compare __comp</code>)传入进来只是比较规则位置发生变化，下文中以默认带有仿函数的为准。</p>
+<blockquote>
+<p>max/min/swap略过</p>
+</blockquote>
+<p>此外，在众多的函数中有着如下规律：</p>
+<blockquote>
+<p><code>xxx </code>和<code>xxx_if</code></p>
+</blockquote>
+<ul>
+<li><code>xxx</code>一般为对值为<code>value</code>的元素进行操作</li>
+<li><code>xxx_if</code>则是对<code>value</code>满足一定条件(<code>__pred</code>)的元素进行操作</li>
+</ul>
+<blockquote>
+<p><code>xxx </code>和 <code>xxx_n</code></p>
+</blockquote>
+<ul>
+<li><code>xxx</code>一般前两个参数为<code>iter first</code>和<code>iter last</code>表示对一个区间内进行操作</li>
+<li><code>xxx_n</code>则是<code>iter first</code>和<code>size_t n</code>是以<code>first</code>为首的<code>n</code>个元素进行操作(也是一个区间)</li>
+</ul>
+<blockquote>
+<p><code>xxx </code>和<code>xxx_copy</code></p>
+</blockquote>
+<ul>
+<li><code>xxx</code>一般是对原数组$\left[first,last\right)$进行操作。</li>
+<li><code>xxx_copy</code>是将操作的结果保存到$\left[result,result+last-first\right)$中。</li>
+</ul>
+<h3 id="accumulate"><a href="#accumulate" class="headerlink" title="accumulate"></a>accumulate</h3><p>将$\left[first,last\right)$的值累加到<code>init</code>上。（<code>init</code>在原基础上增加区间和。）</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 用二元函数 op 计算</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">InputIterator</span>, <span class="keyword">class</span> _<span class="title">Tp</span>, <span class="keyword">class</span> _<span class="title">BinaryOperation</span>&gt;</span></span><br><span class="line"><span class="function">_Tp <span class="title">accumulate</span><span class="params">(_InputIterator __first, _InputIterator __last, _Tp __init,</span></span></span><br><span class="line"><span class="params"><span class="function">               _BinaryOperation __binary_op)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">for</span> ( ; __first != __last; ++__first)</span><br><span class="line">      __init = __binary_op(__init, *__first);</span><br><span class="line">    <span class="comment">//    __init = __init + *__first;</span></span><br><span class="line">    <span class="keyword">return</span> __init;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>__binary_op</code>  —  累加方式</li>
+</ul>
+<h3 id="inner-product"><a href="#inner-product" class="headerlink" title="inner_product"></a>inner_product</h3><p>我们知道两个向量的内积公式：已知两个向量：$\vec a =\left(a_1,a_2,\dots,a_i\right )\qquad\qquad\vec b =\left(b_1,b_2,\dots,b_i\right )$</p>
+<p>两个向量的内积：$\vec a \cdot \vec b =a_1b_1+a_2b_2+\dots+a_ib_i$</p>
+<p>两个数组的内积公式依然，数组中元素的个数类比向量的维度。</p>
+<p>将$\left[first1,last1\right)$与$\left[first2,first2+last1-first1\right)$两个区间做内积，并将结果累加到<code>init</code>。</p>
+<p>由于第二区间只给了首迭代器(<code>first2</code>)，要保证容器中的元素个数充足。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">InputIterator1</span>, <span class="keyword">class</span> _<span class="title">InputIterator2</span>, <span class="keyword">class</span> _<span class="title">Tp</span>,</span></span><br><span class="line"><span class="class">          <span class="keyword">class</span> _<span class="title">BinaryOperation1</span>, <span class="keyword">class</span> _<span class="title">BinaryOperation2</span>&gt;</span></span><br><span class="line"><span class="function">_Tp <span class="title">inner_product</span><span class="params">(_InputIterator1 __first1, _InputIterator1 __last1,</span></span></span><br><span class="line"><span class="params"><span class="function">                  _InputIterator2 __first2, _Tp __init, </span></span></span><br><span class="line"><span class="params"><span class="function">                  _BinaryOperation1 __binary_op1,</span></span></span><br><span class="line"><span class="params"><span class="function">                  _BinaryOperation2 __binary_op2)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> ( ; __first1 != __last1; ++__first1, ++__first2)</span><br><span class="line">        __init = __binary_op1(__init, __binary_op2(*__first1, *__first2));</span><br><span class="line">        <span class="comment">//     __init = __init + (*__first1 * *__first2);</span></span><br><span class="line">    <span class="keyword">return</span> __init;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>__binary_op1</code>  —  累加方式</li>
+<li><code>__binary_op2</code>  —  内积方式</li>
+</ul>
+<h3 id="partial-sum"><a href="#partial-sum" class="headerlink" title="partial_sum"></a>partial_sum</h3><p>计算范围$\left[first,last\right)$的子范围中元素的部分和，并写入到始于 result 的范围</p>
+<p>假设$\left[first,last\right)$表示数组$X=\left[x_1,x_2,\dots,x_i,\dots,x_n\right]$，由result开始的数组$Y=\left[y_1,y_2,\dots,y_i,\dots,y_n\right]$。则该函数实现的功能是$y_i = \sum_{n=0}^{i}x_n $。</p>
+<p>类似于数列的$a_i \qquad S_i$</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">InputIterator</span>, <span class="keyword">class</span> _<span class="title">OutputIterator</span>, <span class="keyword">class</span> _<span class="title">Tp</span>,</span></span><br><span class="line"><span class="class">          <span class="keyword">class</span> _<span class="title">BinaryOperation</span>&gt;</span></span><br><span class="line">_OutputIterator </span><br><span class="line">__partial_sum(_InputIterator __first, _InputIterator __last, </span><br><span class="line">              _OutputIterator __result, _Tp*, _BinaryOperation __binary_op)</span><br><span class="line">&#123;</span><br><span class="line">    _Tp __value = *__first;</span><br><span class="line">    <span class="keyword">while</span> (++__first != __last) &#123;</span><br><span class="line">        __value = __binary_op(__value, *__first);</span><br><span class="line">        <span class="comment">//__value = __value + *__first;</span></span><br><span class="line">        *++__result = __value;</span><br><span class="line">  &#125;</span><br><span class="line">    <span class="keyword">return</span> ++__result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">InputIterator</span>, <span class="keyword">class</span> _<span class="title">OutputIterator</span>, <span class="keyword">class</span> _<span class="title">BinaryOperation</span>&gt;</span></span><br><span class="line"><span class="function">_OutputIterator </span></span><br><span class="line"><span class="function"><span class="title">partial_sum</span><span class="params">(_InputIterator __first, _InputIterator __last,</span></span></span><br><span class="line"><span class="params"><span class="function">            _OutputIterator __result, _BinaryOperation __binary_op)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (__first == __last) <span class="keyword">return</span> __result;<span class="comment">//首尾指针重合 含有0个元素 无操作</span></span><br><span class="line">    *__result = *__first;</span><br><span class="line">    <span class="keyword">return</span> __partial_sum(__first, __last, __result, __VALUE_TYPE(__first), </span><br><span class="line">                         __binary_op);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>__binary_op</code>  —  累加方式</li>
+</ul>
+<h3 id="adjacent-difference"><a href="#adjacent-difference" class="headerlink" title="adjacent_difference"></a>adjacent_difference</h3><p>计算范围$\left[first,last\right)$的相邻元素的差值，并写入到始于 result 的范围。</p>
+<p>假设$\left[first,last\right)$表示数组$X=\left[x_1,x_2,\dots,x_i,\dots,x_n\right]$，由result开始的数组$Y=\left[y_1,y_2,\dots,y_i,\dots,y_n\right]$。则该函数实现的功能是$y_i = x_i - x_{i-1}$，特例$y_0=x_0$</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">InputIterator</span>, <span class="keyword">class</span> _<span class="title">OutputIterator</span>, <span class="keyword">class</span> _<span class="title">Tp</span>, </span></span><br><span class="line"><span class="class">          <span class="keyword">class</span> _<span class="title">BinaryOperation</span>&gt;</span></span><br><span class="line">_OutputIterator</span><br><span class="line">__adjacent_difference(_InputIterator __first, _InputIterator __last, </span><br><span class="line">                      _OutputIterator __result, _Tp*,</span><br><span class="line">                      _BinaryOperation __binary_op) &#123;</span><br><span class="line">    _Tp __value = *__first;<span class="comment">// x_&#123;i-1&#125;</span></span><br><span class="line">    <span class="keyword">while</span> (++__first != __last) &#123;</span><br><span class="line">        _Tp __tmp = *__first;</span><br><span class="line">        *++__result = __binary_op(__tmp, __value);</span><br><span class="line">        <span class="comment">// *++__result = __tmp - __value; </span></span><br><span class="line">        __value = __tmp;</span><br><span class="line">  &#125;</span><br><span class="line">    <span class="keyword">return</span> ++__result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">InputIterator</span>, <span class="keyword">class</span> _<span class="title">OutputIterator</span>, <span class="keyword">class</span> _<span class="title">BinaryOperation</span>&gt;</span></span><br><span class="line"><span class="function">_OutputIterator </span></span><br><span class="line"><span class="function"><span class="title">adjacent_difference</span><span class="params">(_InputIterator __first, _InputIterator __last,</span></span></span><br><span class="line"><span class="params"><span class="function">                    _OutputIterator __result, _BinaryOperation __binary_op)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (__first == __last) <span class="keyword">return</span> __result;<span class="comment">//重合无任何操作</span></span><br><span class="line">    *__result = *__first;<span class="comment">//y0 = x0</span></span><br><span class="line">    <span class="keyword">return</span> __adjacent_difference(__first, __last, __result,</span><br><span class="line">                                 __VALUE_TYPE(__first),</span><br><span class="line">                                 __binary_op);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>__binary_op</code>  —  作差方式</li>
+</ul>
+<h3 id="power"><a href="#power" class="headerlink" title="power"></a>power</h3><p>快速幂求$x^n$。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Tp</span>, <span class="keyword">class</span> _<span class="title">Integer</span>, <span class="keyword">class</span> _<span class="title">MonoidOperation</span>&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> _Tp <span class="title">power</span><span class="params">(_Tp __x, _Integer __n, _MonoidOperation __opr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> __power(__x, __n, __opr);</span><br><span class="line">    <span class="comment">//return __power(__x, __n, multiplies&lt;_Tp&gt;());  </span></span><br><span class="line">    <span class="comment">//不传操作符默认调用算数仿函数multiplies</span></span><br><span class="line">    <span class="comment">//影响的是移位时值改变的方式。</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Tp</span>, <span class="keyword">class</span> _<span class="title">Integer</span>, <span class="keyword">class</span> _<span class="title">MonoidOperation</span>&gt;</span></span><br><span class="line">_Tp __power(_Tp __x, _Integer __n, _MonoidOperation __opr)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (__n == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">identity_element</span>(__opr);</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> ((__n &amp; <span class="number">1</span>) == <span class="number">0</span>) &#123;</span><br><span class="line">            __n &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">            __x = __opr(__x, __x);</span><br><span class="line">            <span class="comment">//默认传参multiplies是相乘，在此可更改</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        _Tp __result = __x;</span><br><span class="line">        __n &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (__n != <span class="number">0</span>) &#123;</span><br><span class="line">            __x = __opr(__x, __x);</span><br><span class="line">            <span class="keyword">if</span> ((__n &amp; <span class="number">1</span>) != <span class="number">0</span>)</span><br><span class="line">                __result = __opr(__result, __x);</span><br><span class="line">            __n &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> __result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="iota"><a href="#iota" class="headerlink" title="iota"></a>iota</h3><p>将$\left[value,value+last-first\right)$元素的值赋给$\left[fist,last\right)$</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">ForwardIter</span>, <span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">void</span>  <span class="title">iota</span><span class="params">(_ForwardIter __first, _ForwardIter __last, _Tp __value)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (__first != __last)</span><br><span class="line">        *__first++ = __value++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="iter-swap"><a href="#iter-swap" class="headerlink" title="iter_swap"></a>iter_swap</h3><p>交换所指向的元素。（指向的内存不变）</p>
+<blockquote>
+<p>以下几个copy/fill函数均有针对字符串的重载，调用<code>memset</code>去赋值。</p>
+<p>由于实现的功能是赋值，也没有额外增加运算规则的重载。</p>
+</blockquote>
+<h3 id="copy"><a href="#copy" class="headerlink" title="copy"></a>copy</h3><p>正向拷贝（<mark>从前往后</mark>读取并赋值）。有<code>random_access_iterator_tag</code>、<code>input_iterator_tag</code>、<code>__copy_trivial</code>等多个版本所实现的功能均为将$\left[first,last\right)$区域的内容拷贝至$\left[result,result+last-first\right)$内。</p>
+<h3 id="copy-backward"><a href="#copy-backward" class="headerlink" title="copy_backward"></a>copy_backward</h3><p>反向拷贝（<mark>从后往前</mark>读取并赋值）。同样有多个重载版本，但实现的功能一样。</p>
+<p>将$\left[first,last\right)$区域的内容拷贝至$\left[result-\left(last-first\right),result\right)$内。</p>
+<h3 id="copy-n"><a href="#copy-n" class="headerlink" title="copy_n"></a>copy_n</h3><p>将$\left[first,first+n\right)$拷贝给$\left[result,result+n\right)$</p>
+<h3 id="fill"><a href="#fill" class="headerlink" title="fill"></a>fill</h3><p>将$\left[first,last\right)$的值赋为<code>value</code></p>
+<h3 id="fill-n"><a href="#fill-n" class="headerlink" title="fill_n"></a>fill_n</h3><p>将$\left[first,first+n\right)$的值赋为<code>value</code></p>
+<h3 id="mismatch"><a href="#mismatch" class="headerlink" title="mismatch"></a>mismatch</h3><p>将$\left[first1,last1\right)$与$\left[first2,first2+last1-first1\right)$中对应位置的元素进行对比。返回 值不相等时的<mark>两个迭代器</mark></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">InputIter1</span>, <span class="keyword">class</span> _<span class="title">InputIter2</span>, <span class="keyword">class</span> _<span class="title">BinaryPredicate</span>&gt;</span></span><br><span class="line"><span class="function">pair&lt;_InputIter1, _InputIter2&gt; <span class="title">mismatch</span><span class="params">(_InputIter1 __first1,</span></span></span><br><span class="line"><span class="params"><span class="function">                                        _InputIter1 __last1,</span></span></span><br><span class="line"><span class="params"><span class="function">                                        _InputIter2 __first2,</span></span></span><br><span class="line"><span class="params"><span class="function">                                        _BinaryPredicate __binary_pred)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (__first1 != __last1 &amp;&amp; __binary_pred(*__first1, *__first2)) &#123;</span><br><span class="line">        						<span class="comment">//*__first1 == *__first2</span></span><br><span class="line">        ++__first1;</span><br><span class="line">        ++__first2;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> pair&lt;_InputIter1, _InputIter2&gt;(__first1, __first2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>__binary_pred</code>  —  自定义的比较规则</li>
+</ul>
+<h3 id="equal"><a href="#equal" class="headerlink" title="equal"></a>equal</h3><p>对比$\left[first1,last1\right)$与$\left[first2,first2+last1-first1\right)$对应位置的元素是否相等，完全相等返回<code>true</code></p>
+<h3 id="lexicographical-compare"><a href="#lexicographical-compare" class="headerlink" title="lexicographical_compare"></a>lexicographical_compare</h3><p>以字典序对比$\left[first1,last1\right)$与$\left[first2,last2\right)$。区间1小于区间2则返回<code>true</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">InputIter1</span>, <span class="keyword">class</span> _<span class="title">InputIter2</span>, <span class="keyword">class</span> _<span class="title">Compare</span>&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">lexicographical_compare</span><span class="params">(_InputIter1 __first1, _InputIter1 __last1,</span></span></span><br><span class="line"><span class="params"><span class="function">                             _InputIter2 __first2, _InputIter2 __last2,</span></span></span><br><span class="line"><span class="params"><span class="function">                             _Compare __comp)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> ( ; __first1 != __last1 &amp;&amp; __first2 != __last2</span><br><span class="line">          ; ++__first1, ++__first2) &#123;</span><br><span class="line">        <span class="keyword">if</span> (__comp(*__first1, *__first2))</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;<span class="comment">//字符小于</span></span><br><span class="line">        <span class="keyword">if</span> (__comp(*__first2, *__first1))</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;<span class="comment">//前面字符相等 但2长（1为2的前缀）</span></span><br><span class="line">    <span class="keyword">return</span> __first1 == __last1 &amp;&amp; __first2 != __last2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="median"><a href="#median" class="headerlink" title="__median"></a>__median</h3><p>一个辅助函数，用于寻找3个元素中的最小值。</p>
+<ul>
+<li>可传入第四个参数<code>__comp</code>，用于更改元素间的比对规则。</li>
+</ul>
+<h3 id="for-each"><a href="#for-each" class="headerlink" title="for_each"></a>for_each</h3><p>遍历。遍历$\left[first,last\right)$区间，并对每个元素执行<code>_Function __f</code></p>
+<blockquote>
+<p>以下 find/count函数针对<code>iterator_category</code>不同</p>
+<p>分为<code>input_iterator_tag</code>和<code>random_access_iterator_tag</code>两个版本</p>
+</blockquote>
+<h3 id="find"><a href="#find" class="headerlink" title="find"></a>find</h3><p>在$\left[first,last\right)$中查找第一个值为<code>val</code>的位置。</p>
+<h3 id="find-if"><a href="#find-if" class="headerlink" title="find_if"></a>find_if</h3><p>在$\left[first,last\right)$中查找第一个值满足<code>__pred</code>条件的位置。</p>
+<h3 id="adjacent-find"><a href="#adjacent-find" class="headerlink" title="adjacent_find"></a>adjacent_find</h3><p>在$\left[first,last\right)$中查找 2 个连续相等的元素。如果能找到返回前一个元素位置的迭代器。</p>
+<p>允许自定义判断规则<code>__binary_pred</code></p>
+<h3 id="count"><a href="#count" class="headerlink" title="count"></a>count</h3><p>判断$\left[first,last\right)$中<code>val</code>出现的次数，并将值加在<code>n</code>上。</p>
+<h3 id="count-if"><a href="#count-if" class="headerlink" title="count_if"></a>count_if</h3><p>判断$\left[first,last\right)$中元素满足<code>__pred</code>条件的个数，并将值加在<code>n</code>上。</p>
+<h3 id="search"><a href="#search" class="headerlink" title="search"></a>search</h3><p>在$\left[first1,last1\right)$中寻找第一个与$\left[first2,last2\right)$相等（或满足<code>__predicate</code>条件）的子数组，返回首个元素的位置。</p>
+<h3 id="search-n"><a href="#search-n" class="headerlink" title="search_n"></a>search_n</h3><p>在$\left[first,last\right)$中寻找第一次连续出现<code>__count</code>个元素值等于<code>__val</code>（或满足<code>__binary_pred</code>条件的<code>__val</code>）的位置。（返回首元素位置）</p>
+<h3 id="swap-ranges"><a href="#swap-ranges" class="headerlink" title="swap_ranges"></a>swap_ranges</h3><p>调用[iter_swap](# iter_swap)实现，互换$\left[first1,last1\right)$与$\left[first2,first2+last1-first1\right)$区间元素（交换所存的值）</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">ForwardIter1</span>, <span class="keyword">class</span> _<span class="title">ForwardIter2</span>&gt;</span></span><br><span class="line"><span class="function">_ForwardIter2 <span class="title">swap_ranges</span><span class="params">(_ForwardIter1 __first1, _ForwardIter1 __last1,</span></span></span><br><span class="line"><span class="params"><span class="function">                          _ForwardIter2 __first2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> ( ; __first1 != __last1; ++__first1, ++__first2)</span><br><span class="line">        <span class="built_in">iter_swap</span>(__first1, __first2);</span><br><span class="line">    <span class="keyword">return</span> __first2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="transform"><a href="#transform" class="headerlink" title="transform"></a>transform</h3><p>将函数<code>__opr</code>(可一元和二元)应用到序列$\left[first1,last1\right)$的元素上，并将这个函数返回的值保存到另一个序列中$\left[result,result+last1-first1\right)$。</p>
+<p>当传入二元仿函数时，需要额外传入一个迭代器<code>first2</code>，所实现的功能是：将$\left[first1,last1\right)$与$\left[first2,first2+last1-first1\right)$进行<code>__binary_op</code>运算并将结果存储在$\left[result,result+last1-first1\right)$</p>
+<blockquote>
+<p>transform与for_each的区别</p>
+</blockquote>
+<ul>
+<li>for_each所调用的仿函数没有返回值，且只能在原位置上修改。</li>
+<li>transform所调用的函数必须有返回值（要依次赋值给另一区间），原位置元素不受影响。</li>
+</ul>
+<h3 id="replace"><a href="#replace" class="headerlink" title="replace"></a>replace</h3><p>将$\left[first,last\right)$中值等于<code>__old_value</code>的元素（满足<code>pred</code>条件的元素）替换为<code>__new_value</code></p>
+<h3 id="replace-copy-if"><a href="#replace-copy-if" class="headerlink" title="replace_copy(_if)"></a>replace_copy(_if)</h3><p><code>replace</code>中的替换是在原位置上进行，该函数是以原数组为基础进行操作，并将结果存在新位置。</p>
+<p>将$\left[first,last\right)$中的值赋值到$\left[result,result+last-first\right)$中，并将其中等于<code>__old_value</code>的元素（满足<code>pred</code>条件的元素，增加<code>_if</code>）替换为<code>__new_value</code>。</p>
+<h3 id="generate-n"><a href="#generate-n" class="headerlink" title="generate(_n)"></a>generate(_n)</h3><p>为$\left[first,last\right)$（或$\left[first,first+n\right)$）中元素赋值为<code>__gen</code>。<code>__gen</code>要求为lambda表达式。</p>
+<blockquote>
+<p>generate与for_each区别</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//generate</span></span><br><span class="line"><span class="keyword">for</span> ( ; __first != __last; ++__first)</span><br><span class="line">    *__first = __gen();</span><br><span class="line"><span class="comment">//for_each</span></span><br><span class="line"><span class="keyword">for</span> ( ; __first != __last; ++__first)</span><br><span class="line">    __f(*__first);</span><br></pre></td></tr></table></figure>
+
+<p>因为函数调用的形式不同，进而对输入的要求也不同。for_each传入的是一个仿函数，而generate传入的是lambda表达式。</p>
+<h3 id="remove-copy-if"><a href="#remove-copy-if" class="headerlink" title="remove(_copy) (_if)"></a><code>remove(_copy) (_if)</code></h3><blockquote>
+<p>值为<code>__value</code>可以替换成满足<code>__pred</code>条件（函数名增加<code>_if</code>）</p>
+</blockquote>
+<h4 id="remove"><a href="#remove" class="headerlink" title="remove"></a>remove</h4><p>在$\left[first,last\right)$中删除掉值为<code>__value</code>的元素（后面元素前移实现覆盖。）</p>
+<p>为实现后面元素前移的覆盖，使用的是<code>remove_copy</code>函数</p>
+<h4 id="remove-copy"><a href="#remove-copy" class="headerlink" title="remove_copy"></a>remove_copy</h4><p>在$\left[first,last\right)$中删除掉值为<code>__value</code>的元素并将结果保存到以<code>__result</code>为首地址的容器中。</p>
+<h3 id="unique-copy"><a href="#unique-copy" class="headerlink" title="unique_copy"></a>unique_copy</h3><p>将$\left[first,last\right)$，拷贝到$\left[result,result+last-first\right)$中，并将连续相等元素删除后者。</p>
+<p>(相邻且满足<code>__binary_pred</code>条件的后者)</p>
+<h3 id="unique"><a href="#unique" class="headerlink" title="unique"></a>unique</h3><p>对$\left[first,last\right)$中连续相等的元素删除后者(相邻且满足<code>__binary_pred</code>条件的后者)</p>
+<h3 id="reverse"><a href="#reverse" class="headerlink" title="reverse"></a>reverse</h3><p>翻转$\left[first,last\right)$区间内的元素。（从两端向中间，依次交换所存储的值）</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">BidirectionalIter</span>&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">reverse</span><span class="params">(_BidirectionalIter __first, _BidirectionalIter __last)</span> </span>&#123;</span><br><span class="line">    __reverse(__first, __last, __ITERATOR_CATEGORY(__first));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">RandomAccessIter</span>&gt;</span></span><br><span class="line"><span class="keyword">void</span> __reverse(_RandomAccessIter __first, _RandomAccessIter __last,</span><br><span class="line">               random_access_iterator_tag) &#123;</span><br><span class="line">    <span class="keyword">while</span> (__first &lt; __last)</span><br><span class="line">        <span class="built_in">iter_swap</span>(__first++, --__last);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="reverse-copy"><a href="#reverse-copy" class="headerlink" title="reverse_copy"></a>reverse_copy</h3><blockquote>
+<p>与先<code>reverse</code>后拷贝实现上有些差别</p>
+</blockquote>
+<p>逆序读取$\left[first,last\right)$区间的值，并写入$\left[result,result+last-first\right)$中</p>
+<h3 id="rotate"><a href="#rotate" class="headerlink" title="rotate"></a>rotate</h3><p>将$\left[first,last\right)$中的元素以<code>middle</code>断开。先存放$\left[middle,last\right)$再存放$\left[first,middle\right)$。返回，开始时first指向的元素现在的位置。（底层实现上疯狂转轮，看不懂）</p>
+<h3 id="rotate-copy"><a href="#rotate-copy" class="headerlink" title="rotate_copy"></a>rotate_copy</h3><blockquote>
+<p>与先<code>rotate</code>后拷贝实现上有些差别</p>
+</blockquote>
+<p>先调用<code>copy(__middle, __last, __result)</code>将$\left[middle,last\right)$的元素存放在以<code>result</code>开始的空间，然后利用copy返回值<code>iter</code>（result开始的数组下一可存放位置）再次调用<code>copy(__first, __middle,iter)</code>将$\left[first,middle\right)$中的元素拷贝到剩余部分。</p>
+<blockquote>
+<p>下述扰乱函数 可加入一个生成随机数的仿函数<code>__rand</code></p>
+</blockquote>
+<h3 id="random-shuffle"><a href="#random-shuffle" class="headerlink" title="random_shuffle"></a>random_shuffle</h3><p>将$\left[first,last\right)$中的元素随机扰乱。（随机洗牌）有$\left(last-first\right)!$种可能。</p>
+<h3 id="random-sample-n"><a href="#random-sample-n" class="headerlink" title="random_sample_n"></a>random_sample_n</h3><p>将$\left[first,last\right)$中的$\min\left(last-first,n\right)$个元素随机的复制到$\left[out,out+n\right)$中。（原数组中每个位置的元素仅能出现一次。）</p>
+<h3 id="random-sample"><a href="#random-sample" class="headerlink" title="random_sample"></a>random_sample</h3><p>将$\left[first,last\right)$中的$\min\left(last-first, olast-ofirst\right)$个元素随机的复制到$\left[olast,ofirst\right)$中。（原数组中每个位置的元素仅能出现一次。）</p>
+<p>以$n =olast-ofirst$ 为参数调用<code>random_sample_n</code></p>
+<h3 id="partition"><a href="#partition" class="headerlink" title="partition"></a>partition</h3><p>以<code>__pred</code>为规则对$\left[first,last\right)$中的元素进行分组（不保证顺序）满足条件的移动至前半部分。</p>
+<h3 id="stable-partition"><a href="#stable-partition" class="headerlink" title="stable_partition"></a>stable_partition</h3><p>同样执行<code>partition</code>相关功能，但保证各自分组内元素的相对顺序。</p>
+<h3 id="1500-sort"><a href="#1500-sort" class="headerlink" title="1500 sort"></a>1500 sort</h3><p>中间1500行未完待续</p>
+<h3 id="find-end"><a href="#find-end" class="headerlink" title="find_end"></a>find_end</h3><p>在$\left[first1,last1\right)$中寻找最后一个与$\left[first2,last2\right)$相等（或满足<code>__predicate</code>条件）的子数组，返回首个元素的位置。</p>
+<h3 id="is-sorted"><a href="#is-sorted" class="headerlink" title="is_sorted"></a>is_sorted</h3><p>$\left[first,last\right)$是否有序(或 任意相邻元素满足<code>__comp</code>关系)</p>
+
+    </div>
+
+    
+    
+    
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------感谢阅读<i class="fa fa-paw"></i>有缘再见-------------</div>
+    
+</div>
+  
+</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SGI-STL/" rel="tag"><i class="fa fa-tag"></i> SGI_STL</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/07/08/STL%E6%BA%90%E7%A0%81-%E4%BB%BF%E5%87%BD%E6%95%B0/" rel="prev" title="STL源码-仿函数">
+      <i class="fa fa-chevron-left"></i> STL源码-仿函数
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#algorithm"><span class="nav-text">algorithm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#accumulate"><span class="nav-text">accumulate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#inner-product"><span class="nav-text">inner_product</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#partial-sum"><span class="nav-text">partial_sum</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#adjacent-difference"><span class="nav-text">adjacent_difference</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#power"><span class="nav-text">power</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iota"><span class="nav-text">iota</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iter-swap"><span class="nav-text">iter_swap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#copy"><span class="nav-text">copy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#copy-backward"><span class="nav-text">copy_backward</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#copy-n"><span class="nav-text">copy_n</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fill"><span class="nav-text">fill</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fill-n"><span class="nav-text">fill_n</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mismatch"><span class="nav-text">mismatch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#equal"><span class="nav-text">equal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lexicographical-compare"><span class="nav-text">lexicographical_compare</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#median"><span class="nav-text">__median</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#for-each"><span class="nav-text">for_each</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#find"><span class="nav-text">find</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#find-if"><span class="nav-text">find_if</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#adjacent-find"><span class="nav-text">adjacent_find</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#count"><span class="nav-text">count</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#count-if"><span class="nav-text">count_if</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#search"><span class="nav-text">search</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#search-n"><span class="nav-text">search_n</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#swap-ranges"><span class="nav-text">swap_ranges</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#transform"><span class="nav-text">transform</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#replace"><span class="nav-text">replace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#replace-copy-if"><span class="nav-text">replace_copy(_if)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#generate-n"><span class="nav-text">generate(_n)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#remove-copy-if"><span class="nav-text">remove(_copy) (_if)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#remove"><span class="nav-text">remove</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#remove-copy"><span class="nav-text">remove_copy</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#unique-copy"><span class="nav-text">unique_copy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#unique"><span class="nav-text">unique</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#reverse"><span class="nav-text">reverse</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#reverse-copy"><span class="nav-text">reverse_copy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rotate"><span class="nav-text">rotate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rotate-copy"><span class="nav-text">rotate_copy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#random-shuffle"><span class="nav-text">random_shuffle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#random-sample-n"><span class="nav-text">random_sample_n</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#random-sample"><span class="nav-text">random_sample</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#partition"><span class="nav-text">partition</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stable-partition"><span class="nav-text">stable_partition</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1500-sort"><span class="nav-text">1500 sort</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#find-end"><span class="nav-text">find_end</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#is-sorted"><span class="nav-text">is_sorted</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">东北某卑微大学生</p>
+  <div class="site-description" itemprop="description">活着</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/leon000919" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;leon000919" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:lyong000919@163.com" title="邮箱 → mailto:lyong000919@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>邮箱</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin=1992018857&website=www.oicqzone.com" title="QQ → tencent:&#x2F;&#x2F;AddContact&#x2F;?fromId&#x3D;45&amp;fromSubId&#x3D;1&amp;subcmd&#x3D;all&amp;uin&#x3D;1992018857&amp;website&#x3D;www.oicqzone.com" rel="noopener" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021/12 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">东北某卑微大学生</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">157k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:22</span>
+<div>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_uv" style='display:none'>
+    有<span id="busuanzi_value_site_uv"></span>人看过我的博客啦
+</span>
+</div>
+</div>
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+-->
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
