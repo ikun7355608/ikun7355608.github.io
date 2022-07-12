@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="本文是在阅读SGI STL v3.3源码中关于algorithm部分，遇到的一些问题及有意思的点。 未完待续">
+  <meta name="description" content="本文是在阅读SGI STL v3.3源码中关于algorithm部分，遇到的一些问题及有意思的点。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="STL源码-算法">
 <meta property="og:url" content="http://example.com/2022/07/09/STL%E6%BA%90%E7%A0%81-%E7%AE%97%E6%B3%95/index.html">
 <meta property="og:site_name" content="残局">
-<meta property="og:description" content="本文是在阅读SGI STL v3.3源码中关于algorithm部分，遇到的一些问题及有意思的点。 未完待续">
+<meta property="og:description" content="本文是在阅读SGI STL v3.3源码中关于algorithm部分，遇到的一些问题及有意思的点。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-07-09T09:41:29.000Z">
-<meta property="article:modified_time" content="2022-07-09T09:43:30.077Z">
+<meta property="article:modified_time" content="2022-07-12T06:57:35.196Z">
 <meta property="article:author" content="东北某卑微大学生">
 <meta property="article:tag" content="SGI_STL">
 <meta name="twitter:card" content="summary">
@@ -208,10 +208,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2022-07-09 17:41:29 / 修改时间：17:43:30" itemprop="dateCreated datePublished" datetime="2022-07-09T17:41:29+08:00">2022-07-09</time>
+              <time title="创建时间：2022-07-09 17:41:29" itemprop="dateCreated datePublished" datetime="2022-07-09T17:41:29+08:00">2022-07-09</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-12 14:57:35" itemprop="dateModified" datetime="2022-07-12T14:57:35+08:00">2022-07-12</time>
+              </span>
 
           <br>
             <span class="post-meta-item" title="本文字数">
@@ -219,14 +225,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>11k</span>
+              <span>13k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>10 分钟</span>
+              <span>12 分钟</span>
             </span>
 
         </div>
@@ -239,7 +245,6 @@
 
       
         <p>本文是在阅读SGI STL v3.3源码中关于<code>algorithm</code>部分，遇到的一些问题及有意思的点。</p>
-<p>未完待续</p>
 <span id="more"></span>
 
 <h2 id="algorithm"><a href="#algorithm" class="headerlink" title="algorithm"></a>algorithm</h2><p>从实现角度看，STL算法实质上也是一种模板类。</p>
@@ -398,7 +403,40 @@
 <p>以$n =olast-ofirst$ 为参数调用<code>random_sample_n</code></p>
 <h3 id="partition"><a href="#partition" class="headerlink" title="partition"></a>partition</h3><p>以<code>__pred</code>为规则对$\left[first,last\right)$中的元素进行分组（不保证顺序）满足条件的移动至前半部分。</p>
 <h3 id="stable-partition"><a href="#stable-partition" class="headerlink" title="stable_partition"></a>stable_partition</h3><p>同样执行<code>partition</code>相关功能，但保证各自分组内元素的相对顺序。</p>
-<h3 id="1500-sort"><a href="#1500-sort" class="headerlink" title="1500 sort"></a>1500 sort</h3><p>中间1500行未完待续</p>
+<h3 id="sort"><a href="#sort" class="headerlink" title="sort"></a>sort</h3><p>对$\left[first,last\right)$进行升序排序。所使用的底层排序算法为插入排序、堆排序（调用<code>partial_sort</code>函数，底层堆排序）。</p>
+<blockquote>
+<p>值相同的元素再排序后，不保证其相对位置。</p>
+</blockquote>
+<h3 id="stable-sort"><a href="#stable-sort" class="headerlink" title="stable_sort"></a>stable_sort</h3><p>对$\left[first,last\right)$进行升序排序。底层排序算法 归并排序。值相同会保证相对位置。</p>
+<h3 id="partial-sort"><a href="#partial-sort" class="headerlink" title="partial_sort"></a>partial_sort</h3><p>在$\left[first,last\right)$中选出<code>middle - first</code>个最小元素存放在$\left[first,middle\right)$中。</p>
+<h3 id="partial-sort-copy"><a href="#partial-sort-copy" class="headerlink" title="partial_sort_copy"></a>partial_sort_copy</h3><p>在$\left[first,last\right)$中选出$rfirst-rlast$个最小元素，存放在$\left[rfirst,rlast\right)$中</p>
+<h3 id="nth-element"><a href="#nth-element" class="headerlink" title="nth_element"></a>nth_element</h3><p>在$\left[first,last\right)$中找到第n小的元素，并将其移动到第n个位置（$first+n-1$）</p>
+<h3 id="lower-bound"><a href="#lower-bound" class="headerlink" title="lower_bound"></a>lower_bound</h3><p>在$\left[first,last\right)$中寻找第一个不小于<code>val</code>的元素。（<code>__comp</code>重载比较规则）</p>
+<h3 id="upper-bound"><a href="#upper-bound" class="headerlink" title="upper_bound"></a>upper_bound</h3><p>在$\left[first,last\right)$中寻找第一个大于<code>val</code>的元素。（<code>__comp</code>重载比较规则）</p>
+<h3 id="equal-range"><a href="#equal-range" class="headerlink" title="equal_range"></a>equal_range</h3><p>在$\left[first,last\right)$中寻找等于<code>val</code>的<mark>所有</mark>元素。（<code>__comp</code>重载比较规则）</p>
+<h3 id="binary-search"><a href="#binary-search" class="headerlink" title="binary_search"></a>binary_search</h3><p>在$\left[first,last\right)$中二分查找是否存在元素<code>val</code></p>
+<h3 id="merge"><a href="#merge" class="headerlink" title="merge"></a>merge</h3><p>将$\left[first1,last1\right)$与$\left[first2,last2\right)$归并排序后存在$\left[result,result+last1-first1+last2-first2\right)$中</p>
+<p>需要注意$\left[first1,last1\right)$与$\left[first2,last2\right)$均为升序。</p>
+<h3 id="inplace-merge"><a href="#inplace-merge" class="headerlink" title="inplace_merge"></a>inplace_merge</h3><p>同样是归并排序。所不同的是该函数是在一个数组中间选定一个中间值，分成前后两个子数组，两个子数组进行归并排序，最终结果存在原数组中。由于涉及到元素换位置问题，故和merge有些出入。</p>
+<p>$\left[first,middle\right)$和$\left[middle,last\right)$进行排序。</p>
+<h3 id="includes"><a href="#includes" class="headerlink" title="includes"></a>includes</h3><p>判断$\left[first2,last2\right)$是否存在于$\left[first1,last1\right)$中，返回T/F</p>
+<h3 id="set-union"><a href="#set-union" class="headerlink" title="set_union"></a>set_union</h3><p>实现两个有序集合$\left[first1,last1\right)$和$\left[first2,last2\right)$的并集操作，并将结果（仍有序）保存在以<code>result</code>开始的数组中。</p>
+<p>$\alpha \cup \beta$</p>
+<blockquote>
+<p> 与<code>merge</code>不同点在于，<code>set_union</code>遇到相同元素会去重。</p>
+</blockquote>
+<h3 id="set-intersection"><a href="#set-intersection" class="headerlink" title="set_intersection"></a>set_intersection</h3><p>求两个集合$\left[first1,last1\right)$和$\left[first2,last2\right)$中相同的元素（或<code>comp(1,2)</code>与<code>comp(2,1)</code>均不满足的）。并将结果（仍有序）保存在以<code>result</code>开始的数组中。</p>
+<p>$\alpha \cap \beta $</p>
+<h3 id="set-difference"><a href="#set-difference" class="headerlink" title="set_difference"></a>set_difference</h3><p>求在$\left[first1,last1\right)$不在$\left[first2,last2\right)$中的元素。并将结果（仍有序）保存在以<code>result</code>开始的数组中。</p>
+<p>$\alpha -\beta $</p>
+<h3 id="set-symmetric-difference"><a href="#set-symmetric-difference" class="headerlink" title="set_symmetric_difference"></a>set_symmetric_difference</h3><p>$\left[first1,last1\right)$与$\left[first2,last2\right)$不重复的元素。</p>
+<p>$\alpha \cup\beta - \alpha \cap\beta$</p>
+<h3 id="max-element"><a href="#max-element" class="headerlink" title="max_element"></a>max_element</h3><p>返回$\left[first,last\right)$中元素值最大的元素的迭代器（重定义比较规则<code>comp</code>）</p>
+<h3 id="min-element"><a href="#min-element" class="headerlink" title="min_element"></a>min_element</h3><p>返回$\left[first,last\right)$中元素值最小的元素的迭代器（重定义比较规则<code>comp</code>）</p>
+<h3 id="next-permutation"><a href="#next-permutation" class="headerlink" title="next_permutation"></a>next_permutation</h3><p>由$\left[first,last\right)$中所有元素组成的排列中，按照从小到大排序后，当前的下一个排列。</p>
+<h3 id="prev-permutation"><a href="#prev-permutation" class="headerlink" title="prev_permutation"></a>prev_permutation</h3><p>由$\left[first,last\right)$中所有元素组成的排列中，按照从小到大排序后，当前的上一个排列。</p>
+<h3 id="find-first-of"><a href="#find-first-of" class="headerlink" title="find_first_of"></a>find_first_of</h3><p>寻找$\left[first2,last2\right)$中的（任意）字符在$\left[first1,last1\right)$中出现最早的位置。返回该位置的下一位置。（或$\left[first2,last2\right)$）中满足<code>__comp</code>条件的元素。</p>
+<p>$\left[first1,last1\right)$中每读取一个元素便与$\left[first2,last2\right)$中所有元素比对一次。</p>
 <h3 id="find-end"><a href="#find-end" class="headerlink" title="find_end"></a>find_end</h3><p>在$\left[first1,last1\right)$中寻找最后一个与$\left[first2,last2\right)$相等（或满足<code>__predicate</code>条件）的子数组，返回首个元素的位置。</p>
 <h3 id="is-sorted"><a href="#is-sorted" class="headerlink" title="is_sorted"></a>is_sorted</h3><p>$\left[first,last\right)$是否有序(或 任意相邻元素满足<code>__comp</code>关系)</p>
 
@@ -490,7 +528,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#algorithm"><span class="nav-text">algorithm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#accumulate"><span class="nav-text">accumulate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#inner-product"><span class="nav-text">inner_product</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#partial-sum"><span class="nav-text">partial_sum</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#adjacent-difference"><span class="nav-text">adjacent_difference</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#power"><span class="nav-text">power</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iota"><span class="nav-text">iota</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iter-swap"><span class="nav-text">iter_swap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#copy"><span class="nav-text">copy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#copy-backward"><span class="nav-text">copy_backward</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#copy-n"><span class="nav-text">copy_n</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fill"><span class="nav-text">fill</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fill-n"><span class="nav-text">fill_n</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mismatch"><span class="nav-text">mismatch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#equal"><span class="nav-text">equal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lexicographical-compare"><span class="nav-text">lexicographical_compare</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#median"><span class="nav-text">__median</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#for-each"><span class="nav-text">for_each</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#find"><span class="nav-text">find</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#find-if"><span class="nav-text">find_if</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#adjacent-find"><span class="nav-text">adjacent_find</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#count"><span class="nav-text">count</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#count-if"><span class="nav-text">count_if</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#search"><span class="nav-text">search</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#search-n"><span class="nav-text">search_n</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#swap-ranges"><span class="nav-text">swap_ranges</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#transform"><span class="nav-text">transform</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#replace"><span class="nav-text">replace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#replace-copy-if"><span class="nav-text">replace_copy(_if)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#generate-n"><span class="nav-text">generate(_n)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#remove-copy-if"><span class="nav-text">remove(_copy) (_if)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#remove"><span class="nav-text">remove</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#remove-copy"><span class="nav-text">remove_copy</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#unique-copy"><span class="nav-text">unique_copy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#unique"><span class="nav-text">unique</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#reverse"><span class="nav-text">reverse</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#reverse-copy"><span class="nav-text">reverse_copy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rotate"><span class="nav-text">rotate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rotate-copy"><span class="nav-text">rotate_copy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#random-shuffle"><span class="nav-text">random_shuffle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#random-sample-n"><span class="nav-text">random_sample_n</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#random-sample"><span class="nav-text">random_sample</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#partition"><span class="nav-text">partition</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stable-partition"><span class="nav-text">stable_partition</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1500-sort"><span class="nav-text">1500 sort</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#find-end"><span class="nav-text">find_end</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#is-sorted"><span class="nav-text">is_sorted</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#algorithm"><span class="nav-text">algorithm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#accumulate"><span class="nav-text">accumulate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#inner-product"><span class="nav-text">inner_product</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#partial-sum"><span class="nav-text">partial_sum</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#adjacent-difference"><span class="nav-text">adjacent_difference</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#power"><span class="nav-text">power</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iota"><span class="nav-text">iota</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iter-swap"><span class="nav-text">iter_swap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#copy"><span class="nav-text">copy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#copy-backward"><span class="nav-text">copy_backward</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#copy-n"><span class="nav-text">copy_n</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fill"><span class="nav-text">fill</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fill-n"><span class="nav-text">fill_n</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mismatch"><span class="nav-text">mismatch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#equal"><span class="nav-text">equal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lexicographical-compare"><span class="nav-text">lexicographical_compare</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#median"><span class="nav-text">__median</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#for-each"><span class="nav-text">for_each</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#find"><span class="nav-text">find</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#find-if"><span class="nav-text">find_if</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#adjacent-find"><span class="nav-text">adjacent_find</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#count"><span class="nav-text">count</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#count-if"><span class="nav-text">count_if</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#search"><span class="nav-text">search</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#search-n"><span class="nav-text">search_n</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#swap-ranges"><span class="nav-text">swap_ranges</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#transform"><span class="nav-text">transform</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#replace"><span class="nav-text">replace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#replace-copy-if"><span class="nav-text">replace_copy(_if)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#generate-n"><span class="nav-text">generate(_n)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#remove-copy-if"><span class="nav-text">remove(_copy) (_if)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#remove"><span class="nav-text">remove</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#remove-copy"><span class="nav-text">remove_copy</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#unique-copy"><span class="nav-text">unique_copy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#unique"><span class="nav-text">unique</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#reverse"><span class="nav-text">reverse</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#reverse-copy"><span class="nav-text">reverse_copy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rotate"><span class="nav-text">rotate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rotate-copy"><span class="nav-text">rotate_copy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#random-shuffle"><span class="nav-text">random_shuffle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#random-sample-n"><span class="nav-text">random_sample_n</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#random-sample"><span class="nav-text">random_sample</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#partition"><span class="nav-text">partition</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stable-partition"><span class="nav-text">stable_partition</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sort"><span class="nav-text">sort</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stable-sort"><span class="nav-text">stable_sort</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#partial-sort"><span class="nav-text">partial_sort</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#partial-sort-copy"><span class="nav-text">partial_sort_copy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nth-element"><span class="nav-text">nth_element</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lower-bound"><span class="nav-text">lower_bound</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#upper-bound"><span class="nav-text">upper_bound</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#equal-range"><span class="nav-text">equal_range</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#binary-search"><span class="nav-text">binary_search</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#merge"><span class="nav-text">merge</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#inplace-merge"><span class="nav-text">inplace_merge</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#includes"><span class="nav-text">includes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#set-union"><span class="nav-text">set_union</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#set-intersection"><span class="nav-text">set_intersection</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#set-difference"><span class="nav-text">set_difference</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#set-symmetric-difference"><span class="nav-text">set_symmetric_difference</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#max-element"><span class="nav-text">max_element</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#min-element"><span class="nav-text">min_element</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#next-permutation"><span class="nav-text">next_permutation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#prev-permutation"><span class="nav-text">prev_permutation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#find-first-of"><span class="nav-text">find_first_of</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#find-end"><span class="nav-text">find_end</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#is-sorted"><span class="nav-text">is_sorted</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -558,12 +596,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">157k</span>
+    <span title="站点总字数">159k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">2:22</span>
+    <span title="站点阅读时长">2:24</span>
 <div>
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <span id="busuanzi_container_site_uv" style='display:none'>
