@@ -20,25 +20,21 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="AVL 树 和红黑树，都假设所有的数据放在主存当中。而当数据量达到亿级，主存当中根本存储不下，我们只能以块的形式从磁盘读取数据，与主存的访问时间相比，磁盘的 I&#x2F;O 操作相当耗时，而提出 B-树的主要目的就是减少磁盘的 I&#x2F;O 操作。">
+  <meta name="description" content="本文基于笔试时遇到的简答题「内存空间分为哪几类」以及面试时遇到的问题「用户态&#x2F;内核态，了解多少」">
 <meta property="og:type" content="article">
-<meta property="og:title" content="B树">
-<meta property="og:url" content="http://example.com/2022/03/06/B%E6%A0%91/index.html">
+<meta property="og:title" content="内存分配">
+<meta property="og:url" content="http://example.com/2022/09/05/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/index.html">
 <meta property="og:site_name" content="残局">
-<meta property="og:description" content="AVL 树 和红黑树，都假设所有的数据放在主存当中。而当数据量达到亿级，主存当中根本存储不下，我们只能以块的形式从磁盘读取数据，与主存的访问时间相比，磁盘的 I&#x2F;O 操作相当耗时，而提出 B-树的主要目的就是减少磁盘的 I&#x2F;O 操作。">
+<meta property="og:description" content="本文基于笔试时遇到的简答题「内存空间分为哪几类」以及面试时遇到的问题「用户态&#x2F;内核态，了解多少」">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2022/03/06/B%E6%A0%91/BTreeExp.png">
-<meta property="og:image" content="http://example.com/2022/03/06/B%E6%A0%91/BTreeSearch1.png">
-<meta property="og:image" content="http://example.com/2022/03/06/B%E6%A0%91/BTreeSearch2.png">
-<meta property="og:image" content="http://example.com/2022/03/06/B%E6%A0%91/BTreeSearch3.png">
-<meta property="article:published_time" content="2022-03-06T13:16:27.000Z">
-<meta property="article:modified_time" content="2022-04-01T09:20:49.969Z">
+<meta property="article:published_time" content="2022-09-05T08:25:22.000Z">
+<meta property="article:modified_time" content="2022-09-05T08:27:30.069Z">
 <meta property="article:author" content="东北某卑微大学生">
-<meta property="article:tag" content="数据结构&amp;算法">
+<meta property="article:tag" content="八股">
+<meta property="article:tag" content="操作系统">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2022/03/06/B%E6%A0%91/BTreeExp.png">
 
-<link rel="canonical" href="http://example.com/2022/03/06/B%E6%A0%91/">
+<link rel="canonical" href="http://example.com/2022/09/05/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/">
 
 
 <script id="page-configurations">
@@ -51,7 +47,7 @@
   };
 </script>
 
-  <title>B树 | 残局</title>
+  <title>内存分配 | 残局</title>
   
 
 
@@ -191,7 +187,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/06/B%E6%A0%91/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/05/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -204,7 +200,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          B树
+          内存分配
         </h1>
 
         <div class="post-meta">
@@ -213,16 +209,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2022-03-06 21:16:27" itemprop="dateCreated datePublished" datetime="2022-03-06T21:16:27+08:00">2022-03-06</time>
+              <time title="创建时间：2022-09-05 16:25:22 / 修改时间：16:27:30" itemprop="dateCreated datePublished" datetime="2022-09-05T16:25:22+08:00">2022-09-05</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-04-01 17:20:49" itemprop="dateModified" datetime="2022-04-01T17:20:49+08:00">2022-04-01</time>
-              </span>
 
           <br>
             <span class="post-meta-item" title="本文字数">
@@ -230,7 +220,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.5k</span>
+              <span>951</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -249,33 +239,66 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>AVL 树 和红黑树，都假设所有的数据放在主存当中。而当数据量达到亿级，主存当中根本存储不下，我们只能以块的形式从磁盘读取数据，与主存的访问时间相比，磁盘的 I/O 操作相当耗时，而提出 B-树的主要目的就是减少磁盘的 I/O 操作。</p>
+        <p>本文基于笔试时遇到的简答题「内存空间分为哪几类」以及面试时遇到的问题「用户态/内核态，了解多少」</p>
 <span id="more"></span>
-<p> B树的一个节点$x$如果包含$n$个$key$，则其有$n+1$个孩子。（$n$个key将其余数据划分为$n+1$个区间，每个孩子介于相应的区间中）</p>
-<h2 id="性质"><a href="#性质" class="headerlink" title="性质"></a>性质</h2><p>B树所具有的的性质人如下:</p>
+
+<h3 id="Kernal-Space"><a href="#Kernal-Space" class="headerlink" title="Kernal Space"></a><code>Kernal Space</code></h3><p>内核空间。由于开发和维护内核的复杂性，只有最重要的和最关键的代码放置在内核中。其他内容通常是作为用户空间应用程序编程的。（避免一些敏感操作）</p>
+<h3 id="User-Space"><a href="#User-Space" class="headerlink" title="User Space"></a><code>User Space</code></h3><blockquote>
+<p>用户态的程序不能随意操作内核空间，这样对操作系统具有一定的安全保护作用。</p>
+</blockquote>
+<p>用户空间从高地址到低地址依次分为如下五个区：</p>
+<h4 id="stack"><a href="#stack" class="headerlink" title=".stack"></a><code>.stack</code></h4><p>栈区。<strong>编译器</strong>在需要的时候分配，不需要时自动清除的变量所在的储存区。</p>
+<ul>
+<li>由编译器自动管理</li>
+<li>程序运行时分配内存</li>
+<li>使用效率高、但空间有限。</li>
+<li>从高地址向低地址扩展，内存连续。</li>
+<li>先进后出</li>
+<li>存放：函数的入口参数、局部变量等</li>
+</ul>
+<h4 id="heap"><a href="#heap" class="headerlink" title=".heap"></a><code>.heap</code></h4><p>堆区。由程序员手动分配释放的储存区。忘记释放会造成内存泄漏。</p>
+<ul>
+<li>程序员手动管理(手动申请、释放)</li>
+<li>程序运行时分配内存</li>
+<li>空间大，可以是不连续的。</li>
+<li>从低地址向高地址扩展</li>
+<li>先进先出</li>
+<li><code>malloc、realloc</code>等开辟的空间即堆区的空间</li>
+</ul>
+<h4 id="bbs-segment"><a href="#bbs-segment" class="headerlink" title=".bbs segment"></a><code>.bbs segment</code></h4><p>全局/静态区。用来存放全局变量、静态变量的区域；当程序运行结束后由系统释放。</p>
+<ul>
+<li>由编译器自动管理</li>
+<li>编译时分配内存</li>
+<li>存放全局变量、静态变量</li>
+</ul>
+<h4 id="data-segment"><a href="#data-segment" class="headerlink" title=".data segment"></a><code>.data segment</code></h4><p>常量区。用来存放字符串字面量、<code>const</code>修饰的全局变量、静态变量。</p>
+<ul>
+<li>由编译器自动管理</li>
+<li>编译时分配内存</li>
+<li>存放<code>const</code>全局变量、<code>const</code>静态变量、字符串字面量。</li>
+</ul>
+<h4 id="text-segment"><a href="#text-segment" class="headerlink" title=".text segment"></a><code>.text segment</code></h4><p>代码区。用于存放CPU指令</p>
+<ul>
+<li>由编译器自动管理</li>
+<li>编译时分配内存</li>
+<li>存放CPU指令</li>
+</ul>
+<h3 id="用户态-内核态"><a href="#用户态-内核态" class="headerlink" title="用户态/内核态"></a>用户态/内核态</h3><blockquote>
+<p>用户态  —  进程运行在用户空间<br>内核态  —  进程运行在内核空间</p>
+</blockquote>
+<p>在<strong>内核态</strong>下，CPU 可以<strong>执行任何指令</strong>。运行的<strong>代码也不受任何的限制</strong>，可以<strong>自由地访问任何有效地址</strong>，也可以直接进行端口的访问。</p>
+<p>在用户态下，被执行的代码要受到 CPU 的很多检查。</p>
+<h4 id="系统调用"><a href="#系统调用" class="headerlink" title="系统调用"></a>系统调用</h4><p>磁盘上文件的读写、内存空间的分配、网络接口读写数据等，都是在内核态完成的。平时使用时，借助操作系统提供的<strong>系统调用接口</strong>来进行使用。</p>
+<blockquote>
+<p>应用程序读取文件大致步骤</p>
+</blockquote>
 <ol>
-<li>每个节点$x$应具有如下属性：<ol>
-<li>$x.n$即，存储在$x$节点的$key$个数</li>
-<li>节点$x$的n个key以<strong style="color:red;">非降序</strong>排列。$x.key_1 \le x.key_2 \le \cdots \le x.key_{x.n}$</li>
-<li>$ x.leaf$，布尔值。用来表示x是(true)否(false)为叶子节点</li>
+<li>应用程序向内核发起系统调用，将进程从用户态切换为内核态。</li>
+<li>CPU把数据读取到内核空间</li>
+<li>数据拷贝到用户空间，并将进程切换为用户态。</li>
+<li>应用程序得到相应的数据，执行其他命令。</li>
 </ol>
-</li>
-<li>每个<strong style="color:red;">非叶子节点</strong>还包括$x.n + 1$个指向其孩子的指针:$x.c_1,x.c_2,x.c_3\cdots,x.c_{x.n +1}$。<mark>叶子节点没有该定义</mark>。</li>
-<li>$x.key_i$对其子节点进行分割。假设$k_i$为其子节点的$key$值。则有 </li>
-</ol>
-<p>$$<br>k_1 \le x.key_1 \le k_2 \le x.key_2 \le \cdots \le x.key_{x.n} \le k_{x.n +1}<br>$$<br>4. 所有的<strong style="color:red;">叶子节点深度相同</strong><br>5. B树的<strong>最小度数</strong>$t \ge 2$以限制每个节点所包含$key$值的个数(上下限)。<br>    1. 除根节点外，每个节点必须<strong>至少</strong>有$t-1$个$key$。（除叶子节点外，每个节点至少有$t$个孩子）<br>    2. 每个节点至多有$2t-1$个key。（除叶子节点外，每个节点至多有$2t$个孩子）当B树恰好拥有$2t-1$个$key$时，称该节点为满的。（结合性质5.1即B树要求半满）</p>
-<p>一个B树的样例如下：<br><img src="/2022/03/06/B%E6%A0%91/BTreeExp.png" alt="B树样例"><br>一个较为简单的B树定义</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BTreeNode</span> </span></span><br><span class="line"><span class="class">&#123;</span> </span><br><span class="line">    <span class="keyword">int</span> *keys; <span class="comment">// 存储key值</span></span><br><span class="line">    <span class="keyword">int</span> t;  <span class="comment">// 最小度 </span></span><br><span class="line">    BTreeNode **C; <span class="comment">// 子节点</span></span><br><span class="line">    <span class="keyword">int</span> n;  <span class="comment">// key的个数</span></span><br><span class="line">    <span class="keyword">bool</span> leaf; <span class="comment">// 是否为叶子节点</span></span><br><span class="line">&#125;; </span><br></pre></td></tr></table></figure>
-<p><strong>B树的高度</strong><br>B树大部分操作的磁盘存取次数与B树的高度成正比。对于任意一个包含$n$个$key$,高度为$h$,最小度为$t$的B树，有</p>
-<p>$$<br>    h \le \log_{t}{\frac{n+1}{2} }<br>$$</p>
-<h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><p>在此假定：B树始终在主存中，无需读取磁盘。</p>
-<h3 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h3><p>B树的搜索，不过是在二叉搜索树的基础上，每个节点有多个$key$值。<br>以上述的样例图中查找33为例。</p>
-<ol>
-<li>首先，访问根节点。先和第一个$key$值20比较，发现 $37&gt;20$。然后与第二个$key$值40比较，此时$37&lt;40$。于是递归到20与40之间的子节点去查找。<br><img src="/2022/03/06/B%E6%A0%91/BTreeSearch1.png" alt="B树搜索样例1_1"></li>
-<li>接着，访问$\left[24,35\right]$节点。先和第一个$key$ 24比较，发现$37&gt;24$。然后与第二个$key$ 35比较,发现$37 &gt; 35$。访问该节点的最后一个子节点。<br><img src="/2022/03/06/B%E6%A0%91/BTreeSearch2.png" alt="B树搜索样例1_2"></li>
-<li>最后在叶子节点$\left[ 37,39\right]$中，查找到37,结束。<br><img src="/2022/03/06/B%E6%A0%91/BTreeSearch3.png" alt="B树查找样例1_3"><br>相关过程代码如下：<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BTreeNode *<span class="title">BTreeNode::search</span><span class="params">(<span class="keyword">int</span> k)</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line"> <span class="comment">// 找到第一个大于待查找k 的key值</span></span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>; </span><br><span class="line">    <span class="keyword">while</span> (i &lt; n &amp;&amp; k &gt; keys[i]) &#123;</span><br><span class="line">    i++; </span><br><span class="line">    &#125;</span><br><span class="line"> <span class="comment">// 相等即找到 </span></span><br><span class="line"> <span class="keyword">if</span> (keys[i] == k) </span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>; </span><br><span class="line"></span><br><span class="line"> <span class="comment">// 如果没有找到，且当前结点为叶子结点则无解</span></span><br><span class="line"> <span class="keyword">if</span> (leaf == <span class="literal">true</span>) </span><br><span class="line">  <span class="keyword">return</span> <span class="literal">nullptr</span>; </span><br><span class="line"></span><br><span class="line"> <span class="comment">// 递归访问恰当的子代</span></span><br><span class="line"> <span class="keyword">return</span> C[i]-&gt;<span class="built_in">search</span>(k); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-插入、删除。过于复杂，先略了，有空再写。</li>
-</ol>
+<p>库函数、Shell指令等就是利用操作系统提供的调用接口来实现用户态的程序向操作系统申请更高权限的服务。</p>
 
     </div>
 
@@ -294,7 +317,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E7%AE%97%E6%B3%95/" rel="tag"><i class="fa fa-tag"></i> 数据结构&算法</a>
+              <a href="/tags/%E5%85%AB%E8%82%A1/" rel="tag"><i class="fa fa-tag"></i> 八股</a>
+              <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag"><i class="fa fa-tag"></i> 操作系统</a>
           </div>
 
         
@@ -303,13 +327,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/01/13/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="prev" title="动态规划">
-      <i class="fa fa-chevron-left"></i> 动态规划
+    <a href="/2022/08/24/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" rel="prev" title="线程同步">
+      <i class="fa fa-chevron-left"></i> 线程同步
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2022/04/30/2022-04%E6%9C%88%E5%BA%A6%E6%80%BB%E7%BB%93/" rel="next" title="2022/04月度总结">
-      2022/04月度总结 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -368,7 +389,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%B4%A8"><span class="nav-text">性质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="nav-text">基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%90%9C%E7%B4%A2"><span class="nav-text">搜索</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Kernal-Space"><span class="nav-text">Kernal Space</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#User-Space"><span class="nav-text">User Space</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#stack"><span class="nav-text">.stack</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#heap"><span class="nav-text">.heap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bbs-segment"><span class="nav-text">.bbs segment</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#data-segment"><span class="nav-text">.data segment</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#text-segment"><span class="nav-text">.text segment</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E6%80%81-%E5%86%85%E6%A0%B8%E6%80%81"><span class="nav-text">用户态&#x2F;内核态</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="nav-text">系统调用</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
