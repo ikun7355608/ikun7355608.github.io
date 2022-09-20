@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-09-12T01:19:41.602Z</updated>
+  <updated>2022-09-20T06:46:29.566Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>TCP连接的建立与断开</title>
+    <link href="http://example.com/2022/09/20/TCP%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%BB%BA%E7%AB%8B%E4%B8%8E%E6%96%AD%E5%BC%80/"/>
+    <id>http://example.com/2022/09/20/TCP%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%BB%BA%E7%AB%8B%E4%B8%8E%E6%96%AD%E5%BC%80/</id>
+    <published>2022-09-20T06:41:57.000Z</published>
+    <updated>2022-09-20T06:46:29.566Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文主要是「三次握手与四次挥手」相关的一些问题</p><span id="more"></span><h3 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h3><ul><li>初始，客户端处于<code>close</code>状态，服务器处于<code>listen</code>状态</li><li>第一次握手  —  客户端向服务器端发送一个<code>SYN</code>位，切换状态至<code>SYN_SENT</code>。</li><li>第二次握手  —  服务器收到<code>SYN</code>报文，向客户端回一个确认报文<code>ACK</code>，切换状态至<code>SYN_REVD</code>；同时，发送自己的<code>SYN</code>报文进行应答。</li><li>第三次握手  —  客户端收到<code>SYN</code>报文后，发送<code>ACK</code>报文给服务器。同时，自身状态切换至<code>established</code></li><li>服务器端收到<code>ACK</code>报文后，切换自身状态为<code>established</code></li></ul><h3 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h3><ul><li>客户端、服务器都处于<code>established</code>状态，进行数据传输。</li><li>第一次挥手  —  客户端发送一个<code>FIN</code>位，表示不再发送请求。同时，状态切换至<code>FIN_WAIT_1</code></li><li>第二次挥手  —  服务器收到客户端的结束请求，发送一个<code>ACK</code>位，表示已收到客户端报文。同时，服务器切换状态为<code>CLOSE_WAIT</code></li><li>客户端收到第二次挥手的报文后，切换自身状态为<code>FIN_WAIT_2</code></li><li>第三次挥手  —  服务器传完数据后，向客户端发送结束报文<code>FIN</code>位，进入<code>LAST_ACK</code>状态。</li><li>第四次挥手  —  客户端收到报文后，发送<code>ACK</code>进行应答。同时切换自身状态为<code>TIME_WAIT</code></li><li>服务器收到<code>ACK</code>报文后，关闭连接。切换为<code>CLOSE</code>状态</li><li>客户端在发送第四次握手后等待<code>2MSL</code>切换为<code>CLOSE</code>状态，关闭连接。</li></ul><h3 id="相关问题"><a href="#相关问题" class="headerlink" title="相关问题"></a>相关问题</h3><h4 id="为什么握手三次"><a href="#为什么握手三次" class="headerlink" title="为什么握手三次"></a>为什么握手三次</h4><blockquote><p>确认双方都能发送、接收数据。</p></blockquote><ul><li>第一次握手  —  服务器端知道客户端可以发送数据</li><li>第二次握手  —  客户端知道服务器端可以发送数据、可以接受数据。</li><li>第三次握手  — 服务器端知道客户端可以接收数据</li></ul><h4 id="FYN泛洪"><a href="#FYN泛洪" class="headerlink" title="FYN泛洪"></a>FYN泛洪</h4><p>利用三次握手的特性，攻击者疯狂发送第一次握手的数据包，收到服务器第二次握手数据包后，并<strong>不会回</strong>第三次握手数据包。服务器收不到相应的ACK位一直重发第二次握手的数据包，最终导致服务器资源耗尽。</p><h4 id="SYN-Cookie"><a href="#SYN-Cookie" class="headerlink" title="SYN Cookie"></a>SYN Cookie</h4><p>为了防止服务器拥有过多上述的半连接状态，在服务器收到第一次握手的数据后，并不会分配资源。而是利用客户端的<code>SYN</code>值计算一个<code>Cookie</code>保存在第二次握手的报文中，返回给客户端，等服务器收到第三次握手的数据包后，根据<code>Cookie</code>值检查报文的合法性。如果合法再分配资源</p><h4 id="TIME-WAIT"><a href="#TIME-WAIT" class="headerlink" title="TIME_WAIT"></a>TIME_WAIT</h4><blockquote><p>防止第四次挥手丢包。</p></blockquote><p>如果客户端发送完第四次挥手数据后，直接切换至<code>CLOSE</code>状态，第四次挥手数据包丢包时，服务器超时重传第三次挥手数据包。此时如果有新的TCP连接重启这个地址信息的话，处于三次握手阶段，客户端发起的是<code>SYN</code>请求，而服务器所等待的是<code>ACK</code>应答。此时会导致发送<code>RST</code>重建连接。</p><h4 id="2MSL"><a href="#2MSL" class="headerlink" title="2MSL"></a>2MSL</h4><p>在<code>TIME_WAIT</code>防止丢包时，客户端从<code>TIME_WAIT</code>切换至<code>CLOSE</code>需要等待<code>2MSL</code></p><blockquote><p>MSL  报文的最大生存时间</p></blockquote><p>如果第三次挥手的包丢包，则第三次挥手从发送到重发，经过<code>2MSL</code>，此时对于客户端来说，已经过去的时间小于等于<code>1MSL</code>（发送第四次挥手数据包，过程中丢包），而后接收到重发的第三次握手数据包的时间小于等于<code>1MSL</code>。即，客户端等待<code>2MSL</code>未收到<code>FIN</code>（第三次挥手）则能够确认服务器已经收到第四次挥手数据包。</p><p>此外，经过<code>2MSL</code>后，与该次连接相关的所有报文，都会超过生命周期。防止提前关闭客户端时，部分报文还存活，从而影响新的连接。</p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;本文主要是「三次握手与四次挥手」相关的一些问题&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="八股" scheme="http://example.com/tags/%E5%85%AB%E8%82%A1/"/>
+    
+    <category term="网络" scheme="http://example.com/tags/%E7%BD%91%E7%BB%9C/"/>
+    
+  </entry>
   
   <entry>
     <title>图算法</title>
@@ -409,25 +430,6 @@
     
     
     <category term="候捷" scheme="http://example.com/tags/%E5%80%99%E6%8D%B7/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>2022/04月度总结</title>
-    <link href="http://example.com/2022/04/30/2022-04%E6%9C%88%E5%BA%A6%E6%80%BB%E7%BB%93/"/>
-    <id>http://example.com/2022/04/30/2022-04%E6%9C%88%E5%BA%A6%E6%80%BB%E7%BB%93/</id>
-    <published>2022-04-30T13:31:30.000Z</published>
-    <updated>2022-07-31T20:38:36.962Z</updated>
-    
-    <content type="html"><![CDATA[<p>不知不觉，马上就来到了五月。大学的课程也只剩下一两门。在大学时光结束之前，记录一下生活。可以将这东西理解为日记(流水账)，但俺懒到一个月才写一次。</p><span id="more"></span><p>这一个月是疯狂投简历的一个月。一共投了将近20份简历吧，只面试了一次。本来觉得我算法还可以，背了几天面经。然后笔试了几次发现，算法垃圾的一批，又再天天刷题。再加上这学期很多门课都是有实验的，有些实验异常浪费时间，实际的学习的时间很少、效率很低。而且还少交了一些作业，直接摆烂了一些作业（指，写一半不想写了直接交）<br><img src="/2022/04/30/2022-04%E6%9C%88%E5%BA%A6%E6%80%BB%E7%BB%93/leetcode.png" alt="力扣刷题"><br>最大的感受是，很多题基本上在看到题的一瞬间就注定结果了。会就是会，不会憋半天也没任何想法（卡样例的想法除外）。<br>一个月来相关的笔试如下（感谢华为的面试让我觉得自己又行了）：<br><img src="/2022/04/30/2022-04%E6%9C%88%E5%BA%A6%E6%80%BB%E7%BB%93/%E6%97%A5%E5%8E%86.jpg" alt="笔试安排"><br>实在学不下去了的时候，看了几本书:《动物凶猛》、《过把瘾就死》、《限时医院》、《潮骚》。影视剧已经被搁置了一段时间。（太令我沉迷）。</p><p>这个月，最<mark>烦心</mark>的是阿里的笔试。周五晚上的笔试，三个编程题，后两个只有一个样例没过，可以说是我发挥最好的一场笔试，结果周一上午直接给我挂了。当然了，最<mark>意外的收获</mark>也就是华为的面试。虽然笔试600分我只有90,但还是给了我面试资格。面试体验感也极好。<br>送给大家最近听到的比较喜欢的一句话（华为面试时，反问面试官职业规划的建议时他说的）</p><blockquote><p>人生中存在着很多的变数。怎么说呢，把握机遇吧。</p></blockquote><p>虽然这句话听起来很俗。但在听完他的故事以及看到他沧桑的面孔后，能说出这句话，又透露着多少的遗憾。<br><del>最后分享一组最近拍摄的照片的原图。</del><strong>删了，没有了。</strong></p>]]></content>
-    
-    
-    <summary type="html">&lt;p&gt;不知不觉，马上就来到了五月。大学的课程也只剩下一两门。在大学时光结束之前，记录一下生活。可以将这东西理解为日记(流水账)，但俺懒到一个月才写一次。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="关于我" scheme="http://example.com/tags/%E5%85%B3%E4%BA%8E%E6%88%91/"/>
     
   </entry>
   
