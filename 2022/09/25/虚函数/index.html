@@ -20,21 +20,21 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="static关键字相关知识点">
+  <meta name="description" content="我们知道，动态多态是借助虚函数实现的，下面是关于虚函数的一些介绍。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="static">
-<meta property="og:url" content="http://example.com/2022/09/07/static/index.html">
+<meta property="og:title" content="虚函数">
+<meta property="og:url" content="http://example.com/2022/09/25/%E8%99%9A%E5%87%BD%E6%95%B0/index.html">
 <meta property="og:site_name" content="残局">
-<meta property="og:description" content="static关键字相关知识点">
+<meta property="og:description" content="我们知道，动态多态是借助虚函数实现的，下面是关于虚函数的一些介绍。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-09-07T08:59:23.000Z">
-<meta property="article:modified_time" content="2022-09-07T09:00:44.836Z">
+<meta property="article:published_time" content="2022-09-25T08:38:28.000Z">
+<meta property="article:modified_time" content="2022-09-25T08:40:26.287Z">
 <meta property="article:author" content="东北某卑微大学生">
 <meta property="article:tag" content="CPP">
 <meta property="article:tag" content="八股">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/2022/09/07/static/">
+<link rel="canonical" href="http://example.com/2022/09/25/%E8%99%9A%E5%87%BD%E6%95%B0/">
 
 
 <script id="page-configurations">
@@ -47,7 +47,7 @@
   };
 </script>
 
-  <title>static | 残局</title>
+  <title>虚函数 | 残局</title>
   
 
 
@@ -187,7 +187,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/07/static/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/25/%E8%99%9A%E5%87%BD%E6%95%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -200,7 +200,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          static
+          虚函数
         </h1>
 
         <div class="post-meta">
@@ -211,7 +211,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-09-07 16:59:23 / 修改时间：17:00:44" itemprop="dateCreated datePublished" datetime="2022-09-07T16:59:23+08:00">2022-09-07</time>
+              <time title="创建时间：2022-09-25 16:38:28 / 修改时间：16:40:26" itemprop="dateCreated datePublished" datetime="2022-09-25T16:38:28+08:00">2022-09-25</time>
             </span>
 
           <br>
@@ -220,14 +220,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>937</span>
+              <span>2.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -239,42 +239,66 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><code>static</code>关键字相关知识点</p>
+        <p>我们知道，动态多态是借助虚函数实现的，下面是关于虚函数的一些介绍。</p>
 <span id="more"></span>
 
-<h3 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h3><p>函数内部定义的变量，当程序执行到它的定义处时，编译器为它在栈上分配空间，函数执行结束时会释放掉他的内存。为保持变量的持久性，我们可以声明其为全局变量、全局函数。但全局函数又破坏了变量的访问范围，为了控制变量的存储方式和可见性，引入<code>static</code>关键字。</p>
-<h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><ol>
-<li>修饰局部变量  —  延长生命周期</li>
+<h3 id="虚函数"><a href="#虚函数" class="headerlink" title="虚函数"></a>虚函数</h3><p>通俗来讲，虚函数是在编译时，并不能确定的类函数，而是在运行时确定的。<br>独特功能：<strong>基类对象访问派生类的函数</strong>。<br>步骤</p>
+<ol>
+<li>定义基类时，函数声明为虚（virtual）</li>
+<li>派生类中，重写基类中定义为虚的函数。</li>
+<li>声明基类指针指向派生类对象。调用虚函数</li>
 </ol>
-<p>局部变量一般创建在栈区，将其声明为<code>static</code>会导致变量创建在全局区。全局区的变量只会在程序运行前初始化一次，其生命周期会一直延续到整个程序执行结束。</p>
-<blockquote>
-<p>生命周期以及存储空间发生了变化，但其作用域并没变。</p>
-</blockquote>
-<ol start="2">
-<li>修饰全局变量、函数  —  信息隐藏，对其他文件不可见。</li>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">      <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span></span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">          cout&lt;&lt;<span class="string">&quot;A::foo() is called&quot;</span>&lt;&lt;endl;</span><br><span class="line">      &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span>:</span><span class="keyword">public</span> A</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">      <span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span></span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">          cout&lt;&lt;<span class="string">&quot;B::foo() is called&quot;</span>&lt;&lt;endl;</span><br><span class="line">      &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    A *a = <span class="keyword">new</span> <span class="built_in">B</span>();</span><br><span class="line">    a-&gt;<span class="built_in">foo</span>();   <span class="comment">// 在这里，a虽然是指向A的指针，但是被调用的函数(foo)却是B的!</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="纯虚函数"><a href="#纯虚函数" class="headerlink" title="纯虚函数"></a>纯虚函数</h3><p>纯虚函数可使当前类变成<strong style="color:red;">抽象类</strong>，<mark>禁止该类被实例化</mark>，并要求其非抽象类的派生类<mark>必须重写</mark>该纯虚函数。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">func</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+
+<p>定义纯虚函数时，不需要定义函数的实现部分。「= 0」 表明程序员将不定义该函数，函数声明是为派生类保留一个位置。「= 0」 的本质是将指向函数体的指针定为$nullptr$</p>
+<h4 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h4><ol>
+<li>类中一旦出现纯虚函数，就不可实例化了（抽象类）；</li>
+<li>纯虚函数有函数体，但最终还是要被派生类重写，在派生类的函数中可以调用基类中有函数体的纯虚函数；</li>
+<li>为使派生类能完全释放资源，基类析构函数必须声明为虚函数。否则，在用基类指针new一个派生类对象后，delete该指针就只能回收与基类相关的资源，造成内存泄漏；</li>
+<li>纯虚析构函数必须要有函数体。</li>
 </ol>
-<p>当同时编译多个文件时，所有未加 static 前缀的全局变量和函数都具有全局可见性。（可被其他文件访问）</p>
-<p>声明为<code>static</code>后，该变量/函数仅在该文件中可见，不能被其他文件访问。</p>
-<blockquote>
-<p>同一工程下，不能被其他文件引用；文件外可定义同名变量/函数。</p>
-</blockquote>
-<ol start="3">
-<li>修饰类成员</li>
+<h3 id="抽象类"><a href="#抽象类" class="headerlink" title="抽象类"></a>抽象类</h3><p>存在纯虚函数的类，叫抽象类。</p>
+<ol>
+<li>抽象类不能用作参数类型、函数返回类型或显式转换的类型。</li>
+<li>可以定义指向抽象类的指针和引用，此指针可以指向它的派生类，进而实现多态性。</li>
+<li>抽象类只能用作其他类的基类，不能建立抽象类对象。</li>
 </ol>
-<p>被<code>static</code>修饰的类成员函数、类成员变量，统一属于类的静态资源，是类实例之间共享的，不是属于此类的任何特定对象。</p>
-<p>静态非常量数据成员在类内仅声明，只能在类外定义和初始化。</p>
-<p><code>static</code>函数不接受<code>this</code>指针只能访问类的 <code>static </code>成员变量。(因为不属于某个具体对象)</p>
-<blockquote>
-<p>static 成员函数不能被 virtual 修饰(同样，因为不属于具体的某个对象)<br>虚函数的重写是通过每个对象内的虚指针去调用，而虚指针调用需要用到<code>this</code>。(<code>this</code>指针 –&gt; <code>vptr</code> –&gt;<code>vtable</code> –&gt; <code>virtual function</code>)</p>
+<h3 id="虚函数表"><a href="#虚函数表" class="headerlink" title="虚函数表"></a>虚函数表</h3><p>对象创建时,编译器对<code>vptr</code>进行初始化，只有当对象构造完全结束后<code>vptr</code>的指向才最终确定。<br>使用虚函数时，对象会多出4字节的虚指针，指针指向类的虚函数表。<strong>对象不包含虚函数表，只有虚指针，类才包含虚函数表。</strong><br>虚表中的指针顺序，取决于类中虚函数的<strong style="color:rgb(0, 191, 166);">声明顺序</strong>。<br>虚函数表在实例化对象创建时创建。</p>
+<h3 id="虚指针-amp-虚表"><a href="#虚指针-amp-虚表" class="headerlink" title="虚指针&amp;虚表"></a>虚指针&amp;虚表</h3><p>vptr &amp; vtbl。只要类中有虚函数，类对象内部就会有出现<mark>一个</mark>指针。虚指针用来指向虚表中的<mark>函数指针</mark>指向虚函数的地址。未重写的虚函数，基类和派生类共用。重写了的，各自虚表中指向重写后的地址。<br>通过指针，向上转型，指向虚函数。<code>(*p-&gt;vptr[n])(p)</code></p>
+<h3 id="相关面试题"><a href="#相关面试题" class="headerlink" title="相关面试题"></a>相关面试题</h3><blockquote>
+<p>动态分配堆上内存的时候，析构函数必须是虚函数。</p>
 </blockquote>
+<p>动态的去分配堆区的空间时，无法在程序运行结束自动释放内存。若基类指针指向派生类，然后基类指针调用delete方法，只能释放基类的内存，进而导致内存泄露。<br>析构函数定义成虚函数，基类指针调用delete方法，会先调用派生类的析构函数，然后自动调用基类的析构函数。</p>
 <blockquote>
-<p>静态成员函数中不能引用非静态成员。类的非静态成员函数可以调用用静态成员函数。<br>静态的资源属于类，并没有实例化对象，没办法知道该类具体有哪些非静态的资源。而对象创建时，类有哪些成员是已知的，均可访问。</p>
+<p>友元函数不能为虚函数</p>
 </blockquote>
-<h4 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h4><p>初始化只有一次，但是可以多次赋值，在主程序之前，编译器已经为其分配好了内存。</p>
+<p>友元函数，<mark>不属于</mark>这个类的成员函数。而且虚函数的目的是通过基类对象访问派生类实现的函数，友元函数不是不是成员函数，更无继承关系。</p>
 <blockquote>
-<p>在静态数据区，内存中所有的字节默认值都是 <code>0x00</code>，可以不用人为的初始化。</p>
+<p>多继承</p>
 </blockquote>
-<p>在 C++中，初始化时在<strong>执行相关代码时才会进行初始化</strong>，主要是由于 C++引入对象后，要进行初始化必须执行相应构造函数和析构函数，在构造函数或析构函数中经常会需要进行某些程序中需要进行的特定操作，并非简单地分配内存。</p>
+<p>多继承下有多个虚表。多个基类之间（类内部按声明顺序）的虚函数，按照继承的顺序，存放虚函数指针。<br>虚函数表中，派生类<mark>重写</mark>的虚函数<strong style="color:orange;">替换了基类虚函数指针</strong>，并指向了派生类的函数实现。</p>
+<blockquote>
+<p>哪些函数不支持声明为虚函数</p>
+</blockquote>
+<p>非成员函数、静态成员函数、内联成员函数、构造函数、友元函数。</p>
+<ul>
+<li>非成员函数：非成员函数只能重载，不能重写。编译器会在编译时绑定函数。</li>
+<li>构造函数：构造函数用来创建一个新的对象,而虚函数的运行是建立在对象的基础上,在构造函数执行时,对象尚未形成,所以不能将构造函数定义为虚函数。</li>
+<li>内联函数：内联函数就是为了在代码中直接展开，减少函数调用花费的代价，虚函数是为了在继承后对象能够准确的执行自己的动作，这是不可能统一的。</li>
+<li>静态成员函数： 静态成员函数对于每个类来说只有一份代码，所有的对象都共享这一份代码，他也没有要动态绑定的必要性。</li>
+<li>友元函数： C++不支持友元函数的继承，对于没有继承特性的函数没有虚函数的说法。</li>
+</ul>
+<blockquote>
+<p>为什么构造函数调用虚函数不能实现多态？</p>
+</blockquote>
+<p>子类构造函数要先调用父类构造函数，虚函数实现重载靠的是动态绑定。<br>如果构造函数中的虚函数为动态绑定(多态)，则子类在构造时，子类的构造函数先调用父类构造函数，而此时父类构造函数不能调用子类的重载函数（子类还未创建，没有虚表。）</p>
+<blockquote>
+<p>怎么通过虚函数实现的多态？(内存、寻址等)</p>
+</blockquote>
+<p>通过对象内存中的vptr找到虚函数表vtbl，接着通过vtbl找到对应虚函数的实现区域并进行调用。<br>类的成员函数存在于<code>.text segment</code>段，为类的所有对象公有。(不管创建多少个对象)成员变量存在于<code>.stack/.heap</code>中供类对象独有。<br>含有虚函数的类对象除了存储成员变量外，还存储一个虚指针<code>vptr</code>，这个虚指针指向一张虚表<code>vtbl</code>。<code>vtbl</code>中存的数据为<strong>函数指针</strong>，存储着虚函数调用的具体函数所在的地址。</p>
 
     </div>
 
@@ -303,13 +327,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/09/05/%E5%86%85%E5%AD%98%E5%88%86%E5%8C%BA/" rel="prev" title="内存分区">
-      <i class="fa fa-chevron-left"></i> 内存分区
+    <a href="/2022/09/20/TCP%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%BB%BA%E7%AB%8B%E4%B8%8E%E6%96%AD%E5%BC%80/" rel="prev" title="TCP连接的建立与断开">
+      <i class="fa fa-chevron-left"></i> TCP连接的建立与断开
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2022/09/11/%E6%B5%B7%E9%87%8F%E6%95%B0%E6%8D%AE%E9%97%AE%E9%A2%98/" rel="next" title="海量数据问题">
-      海量数据问题 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -368,7 +389,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%95%E5%85%A5"><span class="nav-text">引入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8"><span class="nav-text">作用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-text">初始化</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E5%87%BD%E6%95%B0"><span class="nav-text">虚函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%AF%E8%99%9A%E5%87%BD%E6%95%B0"><span class="nav-text">纯虚函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E7%82%B9"><span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%BD%E8%B1%A1%E7%B1%BB"><span class="nav-text">抽象类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E5%87%BD%E6%95%B0%E8%A1%A8"><span class="nav-text">虚函数表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E6%8C%87%E9%92%88-amp-%E8%99%9A%E8%A1%A8"><span class="nav-text">虚指针&amp;虚表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98"><span class="nav-text">相关面试题</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
