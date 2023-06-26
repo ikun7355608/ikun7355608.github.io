@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="虽然，Carl的《代码随想录》和labuladong的《算法小抄》对“动态规划”类问题有着详尽且优质的解答，但仍然想在这里简单啰嗦一下动态规划。在这里，并不想以《算法导论》中较为晦涩且难懂的「矩阵连乘」、「最优二叉搜索树」等为样例进行讲解。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="动态规划">
+<meta property="og:url" content="http://example.com/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/index.html">
+<meta property="og:site_name" content="残局">
+<meta property="og:description" content="虽然，Carl的《代码随想录》和labuladong的《算法小抄》对“动态规划”类问题有着详尽且优质的解答，但仍然想在这里简单啰嗦一下动态规划。在这里，并不想以《算法导论》中较为晦涩且难懂的「矩阵连乘」、「最优二叉搜索树」等为样例进行讲解。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/DPFib.png">
+<meta property="article:published_time" content="2022-01-13T06:08:01.000Z">
+<meta property="article:modified_time" content="2022-07-05T09:03:23.146Z">
+<meta property="article:author" content="某卑微社畜">
+<meta property="article:tag" content="数据结构&amp;算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/DPFib.png">
+
+<link rel="canonical" href="http://example.com/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>动态规划 | 残局</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="残局" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">残局</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">没有故事，不会喝酒。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="某卑微社畜">
+      <meta itemprop="description" content="爱过">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="残局">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          动态规划
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-01-13 14:08:01" itemprop="dateCreated datePublished" datetime="2022-01-13T14:08:01+08:00">2022-01-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-05 17:03:23" itemprop="dateModified" datetime="2022-07-05T17:03:23+08:00">2022-07-05</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>虽然，Carl的<a target="_blank" rel="noopener" href="https://programmercarl.com/">《代码随想录》</a>和labuladong的<a target="_blank" rel="noopener" href="https://labuladong.gitee.io/algo/">《算法小抄》</a>对“动态规划”类问题有着详尽且优质的解答，但仍然想在这里简单啰嗦一下<strong>动态规划</strong>。在这里，并不想以《算法导论》中较为晦涩且难懂的<code>「矩阵连乘」</code>、<code>「最优二叉搜索树」</code>等为样例进行讲解。</p>
+<span id="more"></span>
+
+<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>动态规划，英文名：Dynamic Programming，简称DP。其算法的基本思想是：将待求解的问题<strong>分解成若干个子问题</strong>，先求解子问题，再<strong>由子问题的解得到原问题的解</strong>。换句话说，将一个复杂的问题，分解为多个相互联系的较为简单的子问题，对每个子问题进行求解，复杂问题的答案蕴含在子问题中（<strong>具备「最优子结构」</strong>）。</p>
+<p>通常，可以用动态规划求解的问题也可以用<strong style="color:red;">穷举</strong>来解决问题。但在穷举的过程中会<strong>存在「重叠子问题」</strong>。即，在暴力穷举求解时，一些中间值会进行多次的重复计算，严重影响效率。以斐波那契数列为例:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Fib</span><span class="params">(<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (n &lt; <span class="number">2</span>) ? n: <span class="built_in">Fib</span>(n - <span class="number">1</span>) + <span class="built_in">Fib</span>(n - <span class="number">2</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>递归树如下:</p>
+<p><img src="/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/DPFib.png" alt="斐波那契数列"></p>
+<center>随着递归的进行，$Fib(n)\quad n \in \left[ 2,18\right]$均计算了多次</center>
+
+<p>我们知道，这些进行<strong style="color:red;">重复计算的值</strong>如果<strong style="color:red;">只计算一次</strong>的话，求解问题的<strong style="color:red;">效率</strong>会有一定的<strong style="color:red;">提高</strong>。</p>
+<p>为解决该问题，引入了「备忘录方法」。即，其在<strong style="color:red;">自顶向下</strong>递归过程中<strong style="color:#e67c86;">用一个表来保存已解决问题的答案</strong>，在求解时先查表，表中有的直接用，没有的再递归。上述斐波那契数列在每次递归求解$Fib(n-1)+Fib(n-2)$时，$Fib(n-2)$的值在求解$Fib(n-1)$时已经求过，直接从表中引用。</p>
+<p>我们发现，在利用「备忘录方法」进行求解时，我们是每求解一个问题记录一次，当<strong>并非所有子问题都需要求解时</strong>，「备忘录方法」可以严格的只求解需要的问题，而当所有子问题都需要求解一次或多次时，考虑使用动态规划。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fib</span><span class="params">(<span class="keyword">int</span> N)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (N &lt;= <span class="number">1</span>) <span class="keyword">return</span> N;</span><br><span class="line">    <span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">dp</span><span class="params">(N + <span class="number">1</span>)</span></span>;</span><br><span class="line">    dp[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">    dp[<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= N; i++) &#123;</span><br><span class="line">        dp[i] = dp[i - <span class="number">1</span>] + dp[i - <span class="number">2</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[N];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="基本要素"><a href="#基本要素" class="headerlink" title="基本要素"></a>基本要素</h1><p>动态规划三个基本要素分别为：最优子结构、重叠子问题、状态转移方程。</p>
+<ol>
+<li>最优子结构：当<strong>问题的最优解包含了其子问题的最优解</strong>时，称该问题具有最优子结构性质。分析最优子结构性质时，一般假设由问题的最优解导出的子问题不是最优的，然后再设法说明在这个假设下可以构造出一个比原问题更优解更好的解，从而导出矛盾。</li>
+<li>重叠子问题：在用递归算法自顶向下解此问题时，每次产生的子问题并不总是新问题，<strong>有些子问题被反复计算多次</strong>。动态规划算法对每个问题只解一次，而后将其解保存在一个表格中，当再次需要解此问题时，用常数时间查看一下结果。因此，用动态规划算法通常只需要多项式时间。</li>
+<li>状态转移方程：动态规划中，一个状态向另一个状态转变时的规则。实际的算法问题中，列出状态转移方程往往较为困难。在列相应的状态转移方程时，我们需要注意：确定状态数组<code>dp</code>中角标的含义、初始化时已确定的状态及递归公式。</li>
+</ol>
+<h1 id="求解步骤"><a href="#求解步骤" class="headerlink" title="求解步骤"></a>求解步骤</h1><ol>
+<li>找出最优解的性质，并刻划最优解的结构特征。</li>
+<li> 递归地定义最优值。</li>
+<li> 以自底向上的方式计算出最优值。</li>
+<li> 根据计算最优值时得到的信息，构造最优解。</li>
+</ol>
+<h1 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h1><p>首先，<strong style="color:red;">动态规划和分治法</strong>都是分解成子问题，由子问题的解得到原问题的解。但需要将二者进行区分：动态规划中除了有诸多的重叠子问题外，各子问题之间还存在着一定的关联(通过状态转移方程递推其他状态)。而分治法中，各子问题相对独立。</p>
+<p>再者，<strong style="color:red;">贪心算法和动态规划</strong>也同样的都需要分解子问题来求解。二者所不同的是：<strong style="color:#9b2ebd;">动态规划</strong>在求解问题时需要<strong style="color:#9b2ebd;">遍历所有的可能</strong>情况。而<strong style="color:rgb(0, 191, 166);">贪心算法</strong>在每个子问题求解时<strong style="color:rgb(0, 191, 166);">只考虑局部最优解</strong>的情况。语言介绍较为苍白无力，接下来用<strong style="color:#e67c86;">「拼凑面额问题」</strong>来对比二者的区别。在此，我们将会引入一些面额的纸币以方便举例。</p>
+<h2 id="能否凑出面额"><a href="#能否凑出面额" class="headerlink" title="能否凑出面额"></a>能否凑出面额</h2><p>假设，我们去商店买东西。已知，口袋里有如下几种面额的纸币各<strong>一张</strong>：<code>1</code>,<code>2</code>,<code>5</code>,<code>10</code>,<code>13</code>，我们需要支付的金额为<code>17</code>。而由于种种原因，商店并没有零钱。即，我们需要用上述五个数字中的部分进行加和，让值恰好为17。</p>
+<ul>
+<li><strong style="color:#c04851;">贪心算法</strong><ol>
+<li>首先拿出面值为<code>13</code>的纸币。由于<code>13&lt;17</code>，面值<code>13</code>的纸币<strong>一定要使用</strong>。接下来，我们需要用<code>1</code>,<code>2</code>,<code>5</code>,<code>10</code>四张纸币支付<code>4</code>。</li>
+<li>面值为<code>10</code>的纸币超过了要支付的金额，不予使用。</li>
+<li>面值为<code>5</code>的纸币超过了要支付的金额，不予使用。</li>
+<li>由于<code>2 &lt; 4</code>，面值为<code>2</code>的纸币也一定使用。</li>
+<li>最后，剩下一张面值为<code>1</code>的纸币，不足以支付剩余的金额<code>2</code>。则贪心算法的结果是不能支付。</li>
+</ol>
+</li>
+<li><strong>动态规划</strong><ol>
+<li>我们假设在此按照自顶向下(最大面值开始)求解该问题时，同样的也会经历上述步骤。但，上述步骤执行完时并不直接返回<code>false</code>，而是继续考虑。</li>
+<li>这一次，我们将考虑不需要面值为<code>13</code>的纸币。而是使用面值为<code>10</code>的纸币。这一次，我们需要利用剩下的面值为<code>1</code>,<code>2</code>,<code>5</code>面值的纸币凑出<code>7</code>。</li>
+<li>由于<code>5 &lt; 7</code>，使用面值为<code>5</code>的纸币，我们需要利用剩下的面值为<code>1</code>和<code>2</code>的纸币凑够金额2。显然这是可以的。因此利用动态规划得到的结果是可以支付。</li>
+</ol>
+</li>
+</ul>
+<h2 id="最少纸币数量"><a href="#最少纸币数量" class="headerlink" title="最少纸币数量"></a>最少纸币数量</h2><p>这一次，我们有面值为<code>2</code>,<code>8</code>,<code>10</code>的纸币，假设每种纸币的数量<strong>足够多</strong>。我们需要做的是拼凑出金额<code>16</code>。我们所做的是怎么用较少的纸币数量拼凑出相应的金额。</p>
+<ul>
+<li><strong>贪心算法</strong><ol>
+<li>首先，我们拿出面值为<code>10</code>的纸币，一张即可（<code>10 &lt; 16 &lt; 2 * 10</code>）。接下来，需要利用面值为<code>2</code>和<code>8</code>的纸币凑够金额<code>6</code></li>
+<li>面值为<code>8</code>的纸币超过了要支付的金额，不予使用。</li>
+<li><code>3 * 2 = 6</code>。故需要4张纸币。</li>
+</ol>
+</li>
+<li><strong>动态规划</strong><ul>
+<li>在上述基础上，动态规划还会去考虑不使用面值为<code>10</code>时候的其他情况，分别<code>2 * 8</code>，<code>8 + 4 * 2</code>，<code>8 * 2</code>三种方案，最终确定为使用2张面值<code>8</code>的纸币所用纸币数量最少。</li>
+</ul>
+</li>
+</ul>
+<p>最后，需要声明的是，以上样例中动态规划的解法是为方便理解，效率上有着改进的空间。</p>
+
+    </div>
+
+    
+    
+    
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------感谢阅读<i class="fa fa-paw"></i>有缘再见-------------</div>
+    
+</div>
+  
+</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E7%AE%97%E6%B3%95/" rel="tag"><i class="fa fa-tag"></i> 数据结构&算法</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%BA%A2%E9%BB%91%E6%A0%91/" rel="prev" title="红黑树">
+      <i class="fa fa-chevron-left"></i> 红黑树
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/B%E6%A0%91/" rel="next" title="B树">
+      B树 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-text">定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E8%A6%81%E7%B4%A0"><span class="nav-text">基本要素</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B1%82%E8%A7%A3%E6%AD%A5%E9%AA%A4"><span class="nav-text">求解步骤</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94"><span class="nav-text">对比</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%BD%E5%90%A6%E5%87%91%E5%87%BA%E9%9D%A2%E9%A2%9D"><span class="nav-text">能否凑出面额</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%B0%91%E7%BA%B8%E5%B8%81%E6%95%B0%E9%87%8F"><span class="nav-text">最少纸币数量</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">某卑微社畜</p>
+  <div class="site-description" itemprop="description">爱过</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:goudan.wang@outlook.com" title="邮箱 → mailto:goudan.wang@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>邮箱</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin=1992018857&website=www.oicqzone.com" title="QQ → tencent:&#x2F;&#x2F;AddContact&#x2F;?fromId&#x3D;45&amp;fromSubId&#x3D;1&amp;subcmd&#x3D;all&amp;uin&#x3D;1992018857&amp;website&#x3D;www.oicqzone.com" rel="noopener" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">某卑微社畜</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">221k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:21</span>
+<div>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_uv" style='display:none'>
+    有<span id="busuanzi_value_site_uv"></span>人看过我的博客啦
+</span>
+</div>
+</div>
+<div>
+<span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+<script>
+    var now = new Date(); 
+    function createtime() { 
+        var grt= new Date("12/29/2021 12:00:00");//在此处修改你的建站时间
+        now.setTime(now.getTime()+250); 
+        days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days); 
+        hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours); 
+        if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum); 
+        mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;} 
+        seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum); 
+        snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;} 
+        document.getElementById("timeDate").innerHTML = "已运行 "+dnum+" 天 "; 
+        document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒"; 
+    } 
+setInterval("createtime()",250);
+</script>
+</div>
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+-->
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

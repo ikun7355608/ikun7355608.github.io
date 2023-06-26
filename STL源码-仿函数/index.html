@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文是阅读SGI STL源码中关于functor部分的笔记 同样，本文仍然是建立在已经观看过侯捷老师STL源码剖析课程的基础上。是在阅读源码过程中，对其中的内容进行补充、修饰。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="STL源码-仿函数">
+<meta property="og:url" content="http://example.com/STL%E6%BA%90%E7%A0%81-%E4%BB%BF%E5%87%BD%E6%95%B0/index.html">
+<meta property="og:site_name" content="残局">
+<meta property="og:description" content="本文是阅读SGI STL源码中关于functor部分的笔记 同样，本文仍然是建立在已经观看过侯捷老师STL源码剖析课程的基础上。是在阅读源码过程中，对其中的内容进行补充、修饰。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-07-08T02:33:17.000Z">
+<meta property="article:modified_time" content="2022-08-24T14:08:24.475Z">
+<meta property="article:author" content="某卑微社畜">
+<meta property="article:tag" content="CPP">
+<meta property="article:tag" content="SGI_STL">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/STL%E6%BA%90%E7%A0%81-%E4%BB%BF%E5%87%BD%E6%95%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>STL源码-仿函数 | 残局</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="残局" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">残局</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">没有故事，不会喝酒。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/STL%E6%BA%90%E7%A0%81-%E4%BB%BF%E5%87%BD%E6%95%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="某卑微社畜">
+      <meta itemprop="description" content="爱过">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="残局">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          STL源码-仿函数
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-07-08 10:33:17" itemprop="dateCreated datePublished" datetime="2022-07-08T10:33:17+08:00">2022-07-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-08-24 22:08:24" itemprop="dateModified" datetime="2022-08-24T22:08:24+08:00">2022-08-24</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>19k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>17 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文是阅读<code>SGI STL</code>源码中关于<code>functor</code>部分的笔记</p>
+<p>同样，本文仍然是建立在已经观看过<a target="_blank" rel="noopener" href="https://endgame.cc/2022/06/23/STL%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/">侯捷老师STL源码剖析课程</a>的基础上。是在阅读源码过程中，对其中的内容进行补充、修饰。</p>
+<span id="more"></span>
+
+<h2 id="functor"><a href="#functor" class="headerlink" title="functor"></a>functor</h2><p>仿函数的行为类似于函数，但其可以作为算法的比较策略（优化算法的使用）</p>
+<p>仿函数是一种重载了<code>operator()</code>的模板类，主要用于STL中作为算法的判断条件。</p>
+<h3 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h3><p>从<mark>操作数的个数</mark>上分，可以将仿函数划分为一元仿函数和二元仿函数。</p>
+<h4 id="unary-function"><a href="#unary-function" class="headerlink" title="unary_function"></a>unary_function</h4><p>一元仿函数，呈现一元函数的参数类型和返回值类型。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Arg</span>, <span class="keyword">class</span> _<span class="title">Result</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">unary_function</span> &#123;</span></span><br><span class="line">    <span class="keyword">typedef</span> _Arg argument_type;</span><br><span class="line">    <span class="keyword">typedef</span> _Result result_type;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="binary-function"><a href="#binary-function" class="headerlink" title="binary_function"></a>binary_function</h4><p>二元仿函数，呈现二元函数的第一参数类型、第二参数类型，以及返回值类型。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Arg1</span>, <span class="keyword">class</span> _<span class="title">Arg2</span>, <span class="keyword">class</span> _<span class="title">Result</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">binary_function</span> &#123;</span></span><br><span class="line">    <span class="keyword">typedef</span> _Arg1 first_argument_type;</span><br><span class="line">    <span class="keyword">typedef</span> _Arg2 second_argument_type;</span><br><span class="line">    <span class="keyword">typedef</span> _Result result_type;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>从所实现的功能上划分，可以分为算数类、逻辑运算类、关系运算类。</p>
+</blockquote>
+<ul>
+<li>算数类  —  加法(plus)、减法(minus)、乘法(multiplies)、除法(divides)</li>
+<li>逻辑运算类  —  与（logical_and）、或(logical_or)、非(logical_not)</li>
+<li>关系运算类  —  等于（equal_to）、大于等于（greater_equal）、小于（less）</li>
+</ul>
+<p>下面具体介绍相关仿函数。</p>
+<h4 id="算数类仿函数"><a href="#算数类仿函数" class="headerlink" title="算数类仿函数"></a>算数类仿函数</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 加</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">plus</span> :</span> <span class="keyword">public</span> binary_function&lt;_Tp,_Tp,_Tp&gt; &#123;</span><br><span class="line">    <span class="function">_Tp <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Tp&amp; __x, <span class="keyword">const</span> _Tp&amp; __y)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> __x + __y; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 减</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">minus</span> :</span> <span class="keyword">public</span> binary_function&lt;_Tp,_Tp,_Tp&gt; &#123;</span><br><span class="line">    <span class="function">_Tp <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Tp&amp; __x, <span class="keyword">const</span> _Tp&amp; __y)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> __x - __y; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 乘</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">multiplies</span> :</span> <span class="keyword">public</span> binary_function&lt;_Tp,_Tp,_Tp&gt; &#123;</span><br><span class="line">    <span class="function">_Tp <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Tp&amp; __x, <span class="keyword">const</span> _Tp&amp; __y)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> __x * __y; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 除</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">divides</span> :</span> <span class="keyword">public</span> binary_function&lt;_Tp,_Tp,_Tp&gt; &#123;</span><br><span class="line">    <span class="function">_Tp <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Tp&amp; __x, <span class="keyword">const</span> _Tp&amp; __y)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> __x / __y; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//取余</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">modulus</span> :</span> <span class="keyword">public</span> binary_function&lt;_Tp,_Tp,_Tp&gt; </span><br><span class="line">&#123;</span><br><span class="line">    <span class="function">_Tp <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Tp&amp; __x, <span class="keyword">const</span> _Tp&amp; __y)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> __x % __y; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 取反</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">negate</span> :</span> <span class="keyword">public</span> unary_function&lt;_Tp,_Tp&gt; </span><br><span class="line">&#123;</span><br><span class="line">    <span class="function">_Tp <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Tp&amp; __x)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> -__x; &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="关系运算类仿函数"><a href="#关系运算类仿函数" class="headerlink" title="关系运算类仿函数"></a>关系运算类仿函数</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 等于</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">equal_to</span> :</span> <span class="keyword">public</span> binary_function&lt;_Tp,_Tp,<span class="keyword">bool</span>&gt; </span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Tp&amp; __x, <span class="keyword">const</span> _Tp&amp; __y)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> __x == __y; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 不等于</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">not_equal_to</span> :</span> <span class="keyword">public</span> binary_function&lt;_Tp,_Tp,<span class="keyword">bool</span>&gt; </span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Tp&amp; __x, <span class="keyword">const</span> _Tp&amp; __y)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> __x != __y; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 大于</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">greater</span> :</span> <span class="keyword">public</span> binary_function&lt;_Tp,_Tp,<span class="keyword">bool</span>&gt; </span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Tp&amp; __x, <span class="keyword">const</span> _Tp&amp; __y)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> __x &gt; __y; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 小于</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">less</span> :</span> <span class="keyword">public</span> binary_function&lt;_Tp,_Tp,<span class="keyword">bool</span>&gt; </span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Tp&amp; __x, <span class="keyword">const</span> _Tp&amp; __y)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> __x &lt; __y; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 大于等于</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">greater_equal</span> :</span> <span class="keyword">public</span> binary_function&lt;_Tp,_Tp,<span class="keyword">bool</span>&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Tp&amp; __x, <span class="keyword">const</span> _Tp&amp; __y)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> __x &gt;= __y; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 小于等于</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">less_equal</span> :</span> <span class="keyword">public</span> binary_function&lt;_Tp,_Tp,<span class="keyword">bool</span>&gt; </span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Tp&amp; __x, <span class="keyword">const</span> _Tp&amp; __y)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> __x &lt;= __y; &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="逻辑运算类仿函数"><a href="#逻辑运算类仿函数" class="headerlink" title="逻辑运算类仿函数"></a>逻辑运算类仿函数</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 逻辑与</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">logical_and</span> :</span> <span class="keyword">public</span> binary_function&lt;_Tp,_Tp,<span class="keyword">bool</span>&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Tp&amp; __x, <span class="keyword">const</span> _Tp&amp; __y)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> __x &amp;&amp; __y; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 逻辑或</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">logical_or</span> :</span> <span class="keyword">public</span> binary_function&lt;_Tp,_Tp,<span class="keyword">bool</span>&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Tp&amp; __x, <span class="keyword">const</span> _Tp&amp; __y)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> __x || __y; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 逻辑非</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">logical_not</span> :</span> <span class="keyword">public</span> unary_function&lt;_Tp,<span class="keyword">bool</span>&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Tp&amp; __x)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> !__x; &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Functor-Adapter"><a href="#Functor-Adapter" class="headerlink" title="Functor Adapter"></a>Functor Adapter</h4><h5 id="not1"><a href="#not1" class="headerlink" title="not1"></a>not1</h5><p>创建返回传递的一元谓词的反义的函数对象</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Predicate</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">unary_negate</span> :</span> <span class="keyword">public</span> unary_function&lt;<span class="keyword">typename</span> _Predicate::argument_type, <span class="keyword">bool</span>&gt; &#123;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    _Predicate _M_pred;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">unary_negate</span><span class="params">(<span class="keyword">const</span> _Predicate&amp; __x)</span> : _M_pred(__x) &#123;</span>&#125;</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> <span class="keyword">typename</span> _Predicate::argument_type&amp; __x)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> !_M_pred(__x);</span><br><span class="line">        <span class="comment">//operator()重载</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Predicate</span>&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> unary_negate&lt;_Predicate&gt;  <span class="title">not1</span><span class="params">(<span class="keyword">const</span> _Predicate&amp; __pred)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> unary_negate&lt;_Predicate&gt;(__pred);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="not2"><a href="#not2" class="headerlink" title="not2"></a>not2</h5><p>同理，创建返回传递的二元谓词的反义的函数对象。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Predicate</span>&gt;</span> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">binary_negate</span> </span></span><br><span class="line"><span class="class">  :</span> <span class="keyword">public</span> binary_function&lt;<span class="keyword">typename</span> _Predicate::first_argument_type,</span><br><span class="line">                           <span class="keyword">typename</span> _Predicate::second_argument_type,</span><br><span class="line">                           <span class="keyword">bool</span>&gt; &#123;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    _Predicate _M_pred;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">binary_negate</span><span class="params">(<span class="keyword">const</span> _Predicate&amp; __x)</span> : _M_pred(__x) &#123;</span>&#125;</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> <span class="keyword">typename</span> _Predicate::first_argument_type&amp; __x, </span></span></span><br><span class="line"><span class="params"><span class="function">                    <span class="keyword">const</span> <span class="keyword">typename</span> _Predicate::second_argument_type&amp; __y)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> !_M_pred(__x, __y); </span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Predicate</span>&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> binary_negate&lt;_Predicate&gt;  <span class="title">not2</span><span class="params">(<span class="keyword">const</span> _Predicate&amp; __pred)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> binary_negate&lt;_Predicate&gt;(__pred);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="bind1st"><a href="#bind1st" class="headerlink" title="bind1st"></a>bind1st</h5><p>bind1st,bind2nd要求传入两个参数 第一参数为<code>functor</code>、第二参数为<code>value</code>。</p>
+<p>将一个二元仿函数转化为一元，并将<code>value</code>绑定为<code>functor</code>的第一参数。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Operation</span>&gt;</span> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">binder1st</span></span></span><br><span class="line"><span class="class">  :</span> <span class="keyword">public</span> unary_function&lt;<span class="keyword">typename</span> _Operation::second_argument_type,</span><br><span class="line">                          <span class="keyword">typename</span> _Operation::result_type&gt; &#123;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    _Operation op;</span><br><span class="line">    <span class="keyword">typename</span> _Operation::first_argument_type value;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">binder1st</span>(<span class="keyword">const</span> _Operation&amp; __x,</span><br><span class="line">            <span class="keyword">const</span> <span class="keyword">typename</span> _Operation::first_argument_type&amp; __y)</span><br><span class="line">      : <span class="built_in">op</span>(__x), <span class="built_in">value</span>(__y) &#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">typename</span> _Operation::result_type</span></span><br><span class="line"><span class="function">    <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> <span class="keyword">typename</span> _Operation::second_argument_type&amp; __x)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">op</span>(value, __x); </span><br><span class="line">        <span class="comment">//这里调用op和传入的值value，可见第一参数op应为仿函数</span></span><br><span class="line">        <span class="comment">//和仿函数一起传入的参数value，作为仿函数的第一参数。</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Operation</span>, <span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> binder1st&lt;_Operation&gt; </span></span><br><span class="line"><span class="function"><span class="title">bind1st</span><span class="params">(<span class="keyword">const</span> _Operation&amp; __fn, <span class="keyword">const</span> _Tp&amp; __x)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">typedef</span> <span class="keyword">typename</span> _Operation::first_argument_type _Arg1_type;</span><br><span class="line">    <span class="keyword">return</span> binder1st&lt;_Operation&gt;(__fn, _Arg1_type(__x));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="bind2nd"><a href="#bind2nd" class="headerlink" title="bind2nd"></a>bind2nd</h5><p>将一个二元仿函数转化为一元，并将<code>value</code>绑定为<code>functor</code>的第二参数。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Operation</span>&gt;</span> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">binder2nd</span></span></span><br><span class="line"><span class="class">  :</span> <span class="keyword">public</span> unary_function&lt;<span class="keyword">typename</span> _Operation::first_argument_type,</span><br><span class="line">                          <span class="keyword">typename</span> _Operation::result_type&gt; &#123;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    _Operation op;</span><br><span class="line">    <span class="keyword">typename</span> _Operation::second_argument_type value;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">binder2nd</span>(<span class="keyword">const</span> _Operation&amp; __x,</span><br><span class="line">            <span class="keyword">const</span> <span class="keyword">typename</span> _Operation::second_argument_type&amp; __y) </span><br><span class="line">      : <span class="built_in">op</span>(__x), <span class="built_in">value</span>(__y) &#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">typename</span> _Operation::result_type</span></span><br><span class="line"><span class="function">    <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> <span class="keyword">typename</span> _Operation::first_argument_type&amp; __x)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">op</span>(__x, value); </span><br><span class="line">        <span class="comment">//value作为仿函数的第二参数</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Operation</span>, <span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> binder2nd&lt;_Operation&gt;  <span class="title">bind2nd</span><span class="params">(<span class="keyword">const</span> _Operation&amp; __fn, <span class="keyword">const</span> _Tp&amp; __x)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">typedef</span> <span class="keyword">typename</span> _Operation::second_argument_type _Arg2_type;</span><br><span class="line">    <span class="keyword">return</span> binder2nd&lt;_Operation&gt;(__fn, _Arg2_type(__x));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>bind1st</code>将操作数作为二元仿函数的第一个参数，<code>bind2nd</code>将操作数作为二元仿函数的第二个参数。</p>
+<p>样例：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    vector&lt;<span class="keyword">int</span>&gt; vec = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;;</span><br><span class="line">    <span class="keyword">auto</span> pos1 = <span class="built_in">find_if</span>(vec.<span class="built_in">begin</span>(), vec.<span class="built_in">end</span>(), <span class="built_in">bind1st</span>(less&lt;<span class="keyword">int</span>&gt;(), <span class="number">2</span>));</span><br><span class="line">    cout &lt;&lt; pos1 - vec.<span class="built_in">begin</span>() &lt;&lt; endl;		<span class="comment">// 3</span></span><br><span class="line">    <span class="comment">//bind1st 作为第一参数，调用时为 2 &lt; vec[i] ?   角标3时满足条件，返回。</span></span><br><span class="line">    <span class="keyword">auto</span> pos2 = <span class="built_in">find_if</span>(vec.<span class="built_in">begin</span>(), vec.<span class="built_in">end</span>(), <span class="built_in">bind2nd</span>(less&lt;<span class="keyword">int</span>&gt;(), <span class="number">2</span>));</span><br><span class="line">    cout &lt;&lt; pos2 - vec.<span class="built_in">begin</span>() &lt;&lt; endl;		<span class="comment">// 0</span></span><br><span class="line">    <span class="comment">//bind2nd 作为第二参数，调用时为 vec[i] &lt; 2 ? 角标0即满足条件，返回。 </span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="compose1"><a href="#compose1" class="headerlink" title="compose1"></a>compose1</h5><p>一元组合仿函数适配器。将两个函数嵌套。</p>
+<p>传入$f\left(x\right),g\left(x\right)$实现$f\left(g\left(x\right)\right)$</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Operation1</span>, <span class="keyword">class</span> _<span class="title">Operation2</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">unary_compose</span></span></span><br><span class="line"><span class="class">  :</span> <span class="keyword">public</span> unary_function&lt;<span class="keyword">typename</span> _Operation2::argument_type,</span><br><span class="line">                          <span class="keyword">typename</span> _Operation1::result_type&gt; </span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    _Operation1 _M_fn1;</span><br><span class="line">    _Operation2 _M_fn2;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">unary_compose</span>(<span class="keyword">const</span> _Operation1&amp; __x, <span class="keyword">const</span> _Operation2&amp; __y) </span><br><span class="line">        : _M_fn1(__x), _M_fn2(__y) &#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">typename</span> _Operation1::result_type</span></span><br><span class="line"><span class="function">    <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> <span class="keyword">typename</span> _Operation2::argument_type&amp; __x)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> _M_fn1(_M_fn2(__x));<span class="comment">//实现f(g(x))</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Operation1</span>, <span class="keyword">class</span> _<span class="title">Operation2</span>&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> unary_compose&lt;_Operation1,_Operation2&gt; </span></span><br><span class="line"><span class="function"><span class="title">compose1</span><span class="params">(<span class="keyword">const</span> _Operation1&amp; __fn1, <span class="keyword">const</span> _Operation2&amp; __fn2)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> unary_compose&lt;_Operation1,_Operation2&gt;(__fn1, __fn2);<span class="comment">//传入两个一元仿函数f(x),g(x)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="compose2"><a href="#compose2" class="headerlink" title="compose2"></a>compose2</h5><p>传入三个参数$f\left(x,y\right),g\left(x\right),h\left(x\right)$实现$f\left(g\left(x\right),h\left(x\right)\right)$</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Operation1</span>, <span class="keyword">class</span> _<span class="title">Operation2</span>, <span class="keyword">class</span> _<span class="title">Operation3</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">binary_compose</span></span></span><br><span class="line"><span class="class">  :</span> <span class="keyword">public</span> unary_function&lt;<span class="keyword">typename</span> _Operation2::argument_type,</span><br><span class="line">                          <span class="keyword">typename</span> _Operation1::result_type&gt; &#123;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    _Operation1 _M_fn1;</span><br><span class="line">    _Operation2 _M_fn2;</span><br><span class="line">    _Operation3 _M_fn3;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">binary_compose</span>(<span class="keyword">const</span> _Operation1&amp; __x, <span class="keyword">const</span> _Operation2&amp; __y, </span><br><span class="line">                 <span class="keyword">const</span> _Operation3&amp; __z) </span><br><span class="line">      : _M_fn1(__x), _M_fn2(__y), _M_fn3(__z) &#123; &#125;</span><br><span class="line">    <span class="function"><span class="keyword">typename</span> _Operation1::result_type</span></span><br><span class="line"><span class="function">    <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> <span class="keyword">typename</span> _Operation2::argument_type&amp; __x)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> _M_fn1(_M_fn2(__x), _M_fn3(__x));</span><br><span class="line">        实现<span class="built_in">fn1</span>(<span class="built_in">fn2</span>(x),<span class="built_in">fn3</span>(x));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Operation1</span>, <span class="keyword">class</span> _<span class="title">Operation2</span>, <span class="keyword">class</span> _<span class="title">Operation3</span>&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> binary_compose&lt;_Operation1, _Operation2, _Operation3&gt; </span></span><br><span class="line"><span class="function"><span class="title">compose2</span><span class="params">(<span class="keyword">const</span> _Operation1&amp; __fn1, <span class="keyword">const</span> _Operation2&amp; __fn2, </span></span></span><br><span class="line"><span class="params"><span class="function">         <span class="keyword">const</span> _Operation3&amp; __fn3)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> binary_compose&lt;_Operation1,_Operation2,_Operation3&gt;</span><br><span class="line">        (__fn1, __fn2, __fn3);<span class="comment">//传入三个仿函数，其中fn1为二元，fn2,fn3为一元</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="ptr-fun"><a href="#ptr-fun" class="headerlink" title="ptr_fun"></a>ptr_fun</h5><p>c++11被弃用，被<code>std::function</code>替代。</p>
+<p>用于将函数包装成仿函数。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//包装一元函数</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Arg</span>, <span class="keyword">class</span> _<span class="title">Result</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">pointer_to_unary_function</span> :</span> <span class="keyword">public</span> unary_function&lt;_Arg, _Result&gt; &#123;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    _Result (*_M_ptr)(_Arg);</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">pointer_to_unary_function</span>() &#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">pointer_to_unary_function</span><span class="params">(_Result (*__x)(_Arg))</span> : _M_ptr(__x) &#123;</span>&#125;</span><br><span class="line">    <span class="function">_Result <span class="title">operator</span><span class="params">()</span><span class="params">(_Arg __x)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> _M_ptr(__x); &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Arg</span>, <span class="keyword">class</span> _<span class="title">Result</span>&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> pointer_to_unary_function&lt;_Arg, _Result&gt; <span class="title">ptr_fun</span><span class="params">(_Result (*__x)(_Arg))</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> pointer_to_unary_function&lt;_Arg, _Result&gt;(__x);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//包装二元函数</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Arg1</span>, <span class="keyword">class</span> _<span class="title">Arg2</span>, <span class="keyword">class</span> _<span class="title">Result</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">pointer_to_binary_function</span> :</span> </span><br><span class="line"><span class="keyword">public</span> binary_function&lt;_Arg1,_Arg2,_Result&gt; &#123;</span><br><span class="line">    <span class="keyword">protected</span>:</span><br><span class="line">    _Result (*_M_ptr)(_Arg1, _Arg2);</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">pointer_to_binary_function</span>() &#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">pointer_to_binary_function</span><span class="params">(_Result (*__x)(_Arg1, _Arg2))</span> </span></span><br><span class="line"><span class="function">        : _M_ptr(__x) &#123;</span>&#125;</span><br><span class="line">    <span class="function">_Result <span class="title">operator</span><span class="params">()</span><span class="params">(_Arg1 __x, _Arg2 __y)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> _M_ptr(__x, __y);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Arg1</span>, <span class="keyword">class</span> _<span class="title">Arg2</span>, <span class="keyword">class</span> _<span class="title">Result</span>&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> pointer_to_binary_function&lt;_Arg1,_Arg2,_Result&gt; </span></span><br><span class="line"><span class="function"><span class="title">ptr_fun</span><span class="params">(_Result (*__x)(_Arg1, _Arg2))</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> pointer_to_binary_function&lt;_Arg1,_Arg2,_Result&gt;(__x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="identity"><a href="#identity" class="headerlink" title="identity"></a>identity</h5><p>将参数返回。接受任意类型的参数并使用完美转发，避免了在异构上下文中使用函数对象或带有右值参数时不必要的复制和转换。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">Identity</span> :</span> <span class="keyword">public</span> unary_function&lt;_Tp,_Tp&gt; &#123;</span><br><span class="line">    <span class="function"><span class="keyword">const</span> _Tp&amp; <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Tp&amp; __x)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> __x; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span> <span class="class"><span class="keyword">struct</span> <span class="title">identity</span> :</span> <span class="keyword">public</span> _Identity&lt;_Tp&gt; &#123;&#125;;</span><br></pre></td></tr></table></figure>
+
+<h5 id="select1st-selece2nd"><a href="#select1st-selece2nd" class="headerlink" title="select1st/selece2nd"></a>select1st/selece2nd</h5><p>获取键值对中的第1/2个元素（map中获取<code>Key</code>  <code>Value</code>）<code>x.first /x.second</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// select1st and select2nd are extensions: they are not part of the standard.</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Pair</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">Select1st</span> :</span> <span class="keyword">public</span> unary_function&lt;_Pair, <span class="keyword">typename</span> _Pair::first_type&gt; &#123;</span><br><span class="line">        <span class="function"><span class="keyword">const</span> <span class="keyword">typename</span> _Pair::first_type&amp; <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Pair&amp; __x)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> __x.first;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Pair</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">Select2nd</span> :</span> <span class="keyword">public</span> unary_function&lt;_Pair, <span class="keyword">typename</span> _Pair::second_type&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">const</span> <span class="keyword">typename</span> _Pair::second_type&amp; <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Pair&amp; __x)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> __x.second;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Pair</span>&gt;</span> <span class="class"><span class="keyword">struct</span> <span class="title">select1st</span> :</span> <span class="keyword">public</span> _Select1st&lt;_Pair&gt; &#123;&#125;;</span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Pair</span>&gt;</span> <span class="class"><span class="keyword">struct</span> <span class="title">select2nd</span> :</span> <span class="keyword">public</span> _Select2nd&lt;_Pair&gt; &#123;&#125;;</span><br></pre></td></tr></table></figure>
+
+<h5 id="project1st-project2nd"><a href="#project1st-project2nd" class="headerlink" title="project1st/project2nd"></a>project1st/project2nd</h5><p>获取第1/2个元素，<code>project1st/2nd(x,y)  ---  x/y</code> </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Arg1</span>, <span class="keyword">class</span> _<span class="title">Arg2</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">Project1st</span> :</span> <span class="keyword">public</span> binary_function&lt;_Arg1, _Arg2, _Arg1&gt; &#123;</span><br><span class="line">    <span class="function">_Arg1 <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Arg1&amp; __x, <span class="keyword">const</span> _Arg2&amp;)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> __x; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Arg1</span>, <span class="keyword">class</span> _<span class="title">Arg2</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">Project2nd</span> :</span> <span class="keyword">public</span> binary_function&lt;_Arg1, _Arg2, _Arg2&gt; &#123;</span><br><span class="line">    <span class="function">_Arg2 <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Arg1&amp;, <span class="keyword">const</span> _Arg2&amp; __y)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> __y; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Arg1</span>, <span class="keyword">class</span> _<span class="title">Arg2</span>&gt;</span> </span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">project1st</span> :</span> <span class="keyword">public</span> _Project1st&lt;_Arg1, _Arg2&gt; &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Arg1</span>, <span class="keyword">class</span> _<span class="title">Arg2</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">project2nd</span> :</span> <span class="keyword">public</span> _Project2nd&lt;_Arg1, _Arg2&gt; &#123;&#125;;</span><br></pre></td></tr></table></figure>
+
+<h5 id="constant0-1-2"><a href="#constant0-1-2" class="headerlink" title="constant0/1/2"></a>constant0/1/2</h5><p>0/1/2元常(<code>const</code>)仿函数（只返回一个常量，与参数具体值无关。）</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//void</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Result</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">Constant_void_fun</span> &#123;</span></span><br><span class="line">    <span class="keyword">typedef</span> _Result result_type;</span><br><span class="line">    result_type _M_val;</span><br><span class="line"></span><br><span class="line">    _Constant_void_fun(<span class="keyword">const</span> result_type&amp; __v) : _M_val(__v) &#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">const</span> result_type&amp; <span class="title">operator</span><span class="params">()</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> _M_val; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Result</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">constant_void_fun</span> :</span> <span class="keyword">public</span> _Constant_void_fun&lt;_Result&gt; &#123;</span><br><span class="line">    <span class="built_in">constant_void_fun</span>(<span class="keyword">const</span> _Result&amp; __v) : _Constant_void_fun&lt;_Result&gt;(__v) &#123;&#125;</span><br><span class="line">&#125;;  </span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Result</span>&gt;</span></span><br><span class="line">    <span class="function"><span class="keyword">inline</span> constant_void_fun&lt;_Result&gt; <span class="title">constant0</span><span class="params">(<span class="keyword">const</span> _Result&amp; __val)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> constant_void_fun&lt;_Result&gt;(__val);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//unary</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Result</span>, <span class="keyword">class</span> _<span class="title">Argument</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">Constant_unary_fun</span> &#123;</span></span><br><span class="line">    <span class="keyword">typedef</span> _Argument argument_type;</span><br><span class="line">    <span class="keyword">typedef</span>  _Result  result_type;</span><br><span class="line">    result_type _M_val;</span><br><span class="line"></span><br><span class="line">    _Constant_unary_fun(<span class="keyword">const</span> result_type&amp; __v) : _M_val(__v) &#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">const</span> result_type&amp; <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Argument&amp;)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> _M_val; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Result</span>,</span></span><br><span class="line"><span class="class">          <span class="keyword">class</span> _<span class="title">Argument</span> __<span class="title">STL_DEPENDENT_DEFAULT_TMPL</span>(_<span class="title">Result</span>)&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">constant_unary_fun</span> :</span> <span class="keyword">public</span> _Constant_unary_fun&lt;_Result, _Argument&gt;</span><br><span class="line">&#123;</span><br><span class="line">  <span class="built_in">constant_unary_fun</span>(<span class="keyword">const</span> _Result&amp; __v)</span><br><span class="line">    : _Constant_unary_fun&lt;_Result, _Argument&gt;(__v) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Result</span>&gt;</span></span><br><span class="line">    <span class="function"><span class="keyword">inline</span> constant_unary_fun&lt;_Result,_Result&gt; <span class="title">constant1</span><span class="params">(<span class="keyword">const</span> _Result&amp; __val)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> constant_unary_fun&lt;_Result,_Result&gt;(__val);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//binary</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Result</span>, <span class="keyword">class</span> _<span class="title">Arg1</span>, <span class="keyword">class</span> _<span class="title">Arg2</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">Constant_binary_fun</span> &#123;</span></span><br><span class="line">    <span class="keyword">typedef</span>  _Arg1   first_argument_type;</span><br><span class="line">    <span class="keyword">typedef</span>  _Arg2   second_argument_type;</span><br><span class="line">    <span class="keyword">typedef</span>  _Result result_type;</span><br><span class="line">    _Result _M_val;</span><br><span class="line"></span><br><span class="line">    _Constant_binary_fun(<span class="keyword">const</span> _Result&amp; __v) : _M_val(__v) &#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">const</span> result_type&amp; <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Arg1&amp;, <span class="keyword">const</span> _Arg2&amp;)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> _M_val;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Result</span>,</span></span><br><span class="line"><span class="class">          <span class="keyword">class</span> _<span class="title">Arg1</span> __<span class="title">STL_DEPENDENT_DEFAULT_TMPL</span>(_<span class="title">Result</span>),</span></span><br><span class="line"><span class="class">          <span class="keyword">class</span> _<span class="title">Arg2</span> __<span class="title">STL_DEPENDENT_DEFAULT_TMPL</span>(_<span class="title">Arg1</span>)&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">constant_binary_fun</span></span></span><br><span class="line"><span class="class">  :</span> <span class="keyword">public</span> _Constant_binary_fun&lt;_Result, _Arg1, _Arg2&gt;</span><br><span class="line">&#123;</span><br><span class="line">  <span class="built_in">constant_binary_fun</span>(<span class="keyword">const</span> _Result&amp; __v)</span><br><span class="line">    : _Constant_binary_fun&lt;_Result, _Arg1, _Arg2&gt;(__v) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Result</span>&gt;</span></span><br><span class="line">    <span class="function"><span class="keyword">inline</span> constant_binary_fun&lt;_Result,_Result,_Result&gt; </span></span><br><span class="line"><span class="function">    <span class="title">constant2</span><span class="params">(<span class="keyword">const</span> _Result&amp; __val)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> constant_binary_fun&lt;_Result,_Result,_Result&gt;(__val);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="subtractive-rng"><a href="#subtractive-rng" class="headerlink" title="subtractive_rng"></a>subtractive_rng</h5><p>目前看来，传入一个随机种子，生成一个随机数。（具体作用不详）</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">subtractive_rng</span> :</span> <span class="keyword">public</span> unary_function&lt;<span class="keyword">unsigned</span> <span class="keyword">int</span>, <span class="keyword">unsigned</span> <span class="keyword">int</span>&gt; &#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> _M_table[<span class="number">55</span>];</span><br><span class="line">    <span class="keyword">size_t</span> _M_index1;</span><br><span class="line">    <span class="keyword">size_t</span> _M_index2;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> __limit)</span> </span>&#123;</span><br><span class="line">        _M_index1 = (_M_index1 + <span class="number">1</span>) % <span class="number">55</span>;</span><br><span class="line">        _M_index2 = (_M_index2 + <span class="number">1</span>) % <span class="number">55</span>;</span><br><span class="line">        _M_table[_M_index1] = _M_table[_M_index1] - _M_table[_M_index2];</span><br><span class="line">        <span class="keyword">return</span> _M_table[_M_index1] % __limit;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> _M_initialize(<span class="keyword">unsigned</span> <span class="keyword">int</span> __seed)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">unsigned</span> <span class="keyword">int</span> __k = <span class="number">1</span>;</span><br><span class="line">        _M_table[<span class="number">54</span>] = __seed;</span><br><span class="line">        <span class="keyword">size_t</span> __i;</span><br><span class="line">        <span class="keyword">for</span> (__i = <span class="number">0</span>; __i &lt; <span class="number">54</span>; __i++) &#123;</span><br><span class="line">            <span class="keyword">size_t</span> __ii = (<span class="number">21</span> * (__i + <span class="number">1</span>) % <span class="number">55</span>) - <span class="number">1</span>;</span><br><span class="line">            _M_table[__ii] = __k;</span><br><span class="line">            __k = __seed - __k;</span><br><span class="line">            __seed = _M_table[__ii];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> __loop = <span class="number">0</span>; __loop &lt; <span class="number">4</span>; __loop++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (__i = <span class="number">0</span>; __i &lt; <span class="number">55</span>; __i++)</span><br><span class="line">                _M_table[__i] = _M_table[__i] - _M_table[(<span class="number">1</span> + __i + <span class="number">30</span>) % <span class="number">55</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        _M_index1 = <span class="number">0</span>;</span><br><span class="line">        _M_index2 = <span class="number">31</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">subtractive_rng</span>(<span class="keyword">unsigned</span> <span class="keyword">int</span> __seed) &#123; _M_initialize(__seed); &#125;</span><br><span class="line">    <span class="built_in">subtractive_rng</span>() &#123; _M_initialize(<span class="number">161803398u</span>); &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h5 id="const-mem-fun-1-t"><a href="#const-mem-fun-1-t" class="headerlink" title="(const_)mem_fun(1)_t"></a><code>(const_)mem_fun(1)_t</code></h5><p>允许使用指针参数初始化时不调用任何参数作为一元函数对象的成员函数。</p>
+<p>（假定容器中所有的<mark>指针</mark>所指向的类都包含相同的函数，借此可以在算法中均调用相应函数。如for_each遍历时，执行一些函数。）</p>
+<p>对外接口形式<code> mem_fun(1)</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//调用的是不带参数的非const函数</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Ret</span>, <span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">mem_fun_t</span> :</span> <span class="keyword">public</span> unary_function&lt;_Tp*,_Ret&gt; &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">mem_fun_t</span><span class="params">(_Ret (_Tp::*__pf)())</span> : _M_f(__pf) &#123;</span>&#125;</span><br><span class="line">    <span class="function">_Ret <span class="title">operator</span><span class="params">()</span><span class="params">(_Tp* __p)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> (__p-&gt;*_M_f)(); &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    _Ret (_Tp::*_M_f)();</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//不带参数的const函数</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Ret</span>, <span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">const_mem_fun_t</span> :</span> <span class="keyword">public</span> unary_function&lt;<span class="keyword">const</span> _Tp*,_Ret&gt; &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">const_mem_fun_t</span><span class="params">(_Ret (_Tp::*__pf)() <span class="keyword">const</span>)</span> : _M_f(__pf) &#123;</span>&#125;</span><br><span class="line">    <span class="function">_Ret <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Tp* __p)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> (__p-&gt;*_M_f)(); &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    _Ret (_Tp::*_M_f)() <span class="keyword">const</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//带一个参数是非const函数</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Ret</span>, <span class="keyword">class</span> _<span class="title">Tp</span>, <span class="keyword">class</span> _<span class="title">Arg</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">mem_fun1_t</span> :</span> <span class="keyword">public</span> binary_function&lt;_Tp*,_Arg,_Ret&gt; &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">mem_fun1_t</span><span class="params">(_Ret (_Tp::*__pf)(_Arg))</span> : _M_f(__pf) &#123;</span>&#125;</span><br><span class="line">    <span class="function">_Ret <span class="title">operator</span><span class="params">()</span><span class="params">(_Tp* __p, _Arg __x)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> (__p-&gt;*_M_f)(__x); &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    _Ret (_Tp::*_M_f)(_Arg);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//带一个参数的const函数</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Ret</span>, <span class="keyword">class</span> _<span class="title">Tp</span>, <span class="keyword">class</span> _<span class="title">Arg</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">const_mem_fun1_t</span> :</span> <span class="keyword">public</span> binary_function&lt;<span class="keyword">const</span> _Tp*,_Arg,_Ret&gt; &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">const_mem_fun1_t</span><span class="params">(_Ret (_Tp::*__pf)(_Arg) <span class="keyword">const</span>)</span> : _M_f(__pf) &#123;</span>&#125;</span><br><span class="line">    <span class="function">_Ret <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Tp* __p, _Arg __x)</span> <span class="keyword">const</span></span></span><br><span class="line"><span class="function">    </span>&#123; <span class="keyword">return</span> (__p-&gt;*_M_f)(__x); &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    _Ret (_Tp::*_M_f)(_Arg) <span class="keyword">const</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>测试样例如下:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">DoSomething</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;do something&quot;</span>&lt;&lt;endl;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    vector&lt;A*&gt; vec;</span><br><span class="line">    A* a = <span class="keyword">new</span> <span class="built_in">A</span>();</span><br><span class="line">    A *b = <span class="keyword">new</span> <span class="built_in">A</span>();</span><br><span class="line">    A *c = <span class="keyword">new</span> <span class="built_in">A</span>();</span><br><span class="line"></span><br><span class="line">    vec.<span class="built_in">push_back</span>(a);</span><br><span class="line">    vec.<span class="built_in">push_back</span>(b);</span><br><span class="line">    vec.<span class="built_in">push_back</span>(c);</span><br><span class="line">    for_each(vec.<span class="built_in">begin</span>(), vec.<span class="built_in">end</span>(), <span class="built_in">mem_fun</span>(&amp;A::DoSomething));</span><br><span class="line">    <span class="keyword">delete</span> a;</span><br><span class="line">    <span class="keyword">delete</span> b;</span><br><span class="line">    <span class="keyword">delete</span> c;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="const-mem-fun-1-ref-t"><a href="#const-mem-fun-1-ref-t" class="headerlink" title="(const_)mem_fun(1)_ref_t"></a><code>(const_)mem_fun(1)_ref_t</code></h5><p>与前文中<code>(const_)mem_fun(1)_t</code>所实现的功能相同。不同之处:前面(无<code>_ref</code>)在容器中存指针，这里(<code>_ref</code>)在容器里存引用。</p>
+<p>最终对外接口形式<code>mem_fun(1)_ref</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Ret</span>, <span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">mem_fun_ref_t</span> :</span> <span class="keyword">public</span> unary_function&lt;_Tp,_Ret&gt; &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">mem_fun_ref_t</span><span class="params">(_Ret (_Tp::*__pf)())</span> : _M_f(__pf) &#123;</span>&#125;</span><br><span class="line">    <span class="function">_Ret <span class="title">operator</span><span class="params">()</span><span class="params">(_Tp&amp; __r)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> (__r.*_M_f)(); &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    _Ret (_Tp::*_M_f)();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Ret</span>, <span class="keyword">class</span> _<span class="title">Tp</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">const_mem_fun_ref_t</span> :</span> <span class="keyword">public</span> unary_function&lt;_Tp,_Ret&gt; &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">const_mem_fun_ref_t</span><span class="params">(_Ret (_Tp::*__pf)() <span class="keyword">const</span>)</span> : _M_f(__pf) &#123;</span>&#125;</span><br><span class="line">    <span class="function">_Ret <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Tp&amp; __r)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> (__r.*_M_f)(); &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    _Ret (_Tp::*_M_f)() <span class="keyword">const</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Ret</span>, <span class="keyword">class</span> _<span class="title">Tp</span>, <span class="keyword">class</span> _<span class="title">Arg</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">mem_fun1_ref_t</span> :</span> <span class="keyword">public</span> binary_function&lt;_Tp,_Arg,_Ret&gt; &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">mem_fun1_ref_t</span><span class="params">(_Ret (_Tp::*__pf)(_Arg))</span> : _M_f(__pf) &#123;</span>&#125;</span><br><span class="line">    <span class="function">_Ret <span class="title">operator</span><span class="params">()</span><span class="params">(_Tp&amp; __r, _Arg __x)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> (__r.*_M_f)(__x); &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    _Ret (_Tp::*_M_f)(_Arg);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">Ret</span>, <span class="keyword">class</span> _<span class="title">Tp</span>, <span class="keyword">class</span> _<span class="title">Arg</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">const_mem_fun1_ref_t</span> :</span> <span class="keyword">public</span> binary_function&lt;_Tp,_Arg,_Ret&gt; &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">const_mem_fun1_ref_t</span><span class="params">(_Ret (_Tp::*__pf)(_Arg) <span class="keyword">const</span>)</span> : _M_f(__pf) &#123;</span>&#125;</span><br><span class="line">    <span class="function">_Ret <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> _Tp&amp; __r, _Arg __x)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> (__r.*_M_f)(__x); &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    _Ret (_Tp::*_M_f)(_Arg) <span class="keyword">const</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------感谢阅读<i class="fa fa-paw"></i>有缘再见-------------</div>
+    
+</div>
+  
+</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CPP/" rel="tag"><i class="fa fa-tag"></i> CPP</a>
+              <a href="/tags/SGI-STL/" rel="tag"><i class="fa fa-tag"></i> SGI_STL</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/STL%E6%BA%90%E7%A0%81-%E8%BF%AD%E4%BB%A3%E5%99%A8/" rel="prev" title="STL源码-迭代器">
+      <i class="fa fa-chevron-left"></i> STL源码-迭代器
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/STL%E6%BA%90%E7%A0%81-%E7%AE%97%E6%B3%95/" rel="next" title="STL源码-算法">
+      STL源码-算法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#functor"><span class="nav-text">functor</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E7%B1%BB"><span class="nav-text">分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#unary-function"><span class="nav-text">unary_function</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#binary-function"><span class="nav-text">binary_function</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%97%E6%95%B0%E7%B1%BB%E4%BB%BF%E5%87%BD%E6%95%B0"><span class="nav-text">算数类仿函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E7%B3%BB%E8%BF%90%E7%AE%97%E7%B1%BB%E4%BB%BF%E5%87%BD%E6%95%B0"><span class="nav-text">关系运算类仿函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%B1%BB%E4%BB%BF%E5%87%BD%E6%95%B0"><span class="nav-text">逻辑运算类仿函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Functor-Adapter"><span class="nav-text">Functor Adapter</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#not1"><span class="nav-text">not1</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#not2"><span class="nav-text">not2</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#bind1st"><span class="nav-text">bind1st</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#bind2nd"><span class="nav-text">bind2nd</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#compose1"><span class="nav-text">compose1</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#compose2"><span class="nav-text">compose2</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ptr-fun"><span class="nav-text">ptr_fun</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#identity"><span class="nav-text">identity</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#select1st-selece2nd"><span class="nav-text">select1st&#x2F;selece2nd</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#project1st-project2nd"><span class="nav-text">project1st&#x2F;project2nd</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#constant0-1-2"><span class="nav-text">constant0&#x2F;1&#x2F;2</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#subtractive-rng"><span class="nav-text">subtractive_rng</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#const-mem-fun-1-t"><span class="nav-text">(const_)mem_fun(1)_t</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#const-mem-fun-1-ref-t"><span class="nav-text">(const_)mem_fun(1)_ref_t</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">某卑微社畜</p>
+  <div class="site-description" itemprop="description">爱过</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:goudan.wang@outlook.com" title="邮箱 → mailto:goudan.wang@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>邮箱</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin=1992018857&website=www.oicqzone.com" title="QQ → tencent:&#x2F;&#x2F;AddContact&#x2F;?fromId&#x3D;45&amp;fromSubId&#x3D;1&amp;subcmd&#x3D;all&amp;uin&#x3D;1992018857&amp;website&#x3D;www.oicqzone.com" rel="noopener" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">某卑微社畜</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">221k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:21</span>
+<div>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_uv" style='display:none'>
+    有<span id="busuanzi_value_site_uv"></span>人看过我的博客啦
+</span>
+</div>
+</div>
+<div>
+<span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+<script>
+    var now = new Date(); 
+    function createtime() { 
+        var grt= new Date("12/29/2021 12:00:00");//在此处修改你的建站时间
+        now.setTime(now.getTime()+250); 
+        days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days); 
+        hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours); 
+        if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum); 
+        mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;} 
+        seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum); 
+        snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;} 
+        document.getElementById("timeDate").innerHTML = "已运行 "+dnum+" 天 "; 
+        document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒"; 
+    } 
+setInterval("createtime()",250);
+</script>
+</div>
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+-->
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
