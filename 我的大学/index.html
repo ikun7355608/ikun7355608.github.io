@@ -20,21 +20,20 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="我们知道，动态多态是借助虚函数实现的，下面是关于虚函数的一些介绍。">
+  <meta name="description" content="谨以此文纪念我的大学时光">
 <meta property="og:type" content="article">
-<meta property="og:title" content="虚函数">
-<meta property="og:url" content="http://example.com/%E8%99%9A%E5%87%BD%E6%95%B0/index.html">
+<meta property="og:title" content="我的大学">
+<meta property="og:url" content="http://example.com/%E6%88%91%E7%9A%84%E5%A4%A7%E5%AD%A6/index.html">
 <meta property="og:site_name" content="残局">
-<meta property="og:description" content="我们知道，动态多态是借助虚函数实现的，下面是关于虚函数的一些介绍。">
+<meta property="og:description" content="谨以此文纪念我的大学时光">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-09-25T08:38:28.000Z">
-<meta property="article:modified_time" content="2022-09-30T08:54:19.722Z">
+<meta property="article:published_time" content="2023-06-26T07:44:31.000Z">
+<meta property="article:modified_time" content="2023-06-26T09:39:30.632Z">
 <meta property="article:author" content="某卑微社畜">
-<meta property="article:tag" content="CPP">
-<meta property="article:tag" content="八股">
+<meta property="article:tag" content="关于我">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/%E8%99%9A%E5%87%BD%E6%95%B0/">
+<link rel="canonical" href="http://example.com/%E6%88%91%E7%9A%84%E5%A4%A7%E5%AD%A6/">
 
 
 <script id="page-configurations">
@@ -47,7 +46,7 @@
   };
 </script>
 
-  <title>虚函数 | 残局</title>
+  <title>我的大学 | 残局</title>
   
 
 
@@ -187,7 +186,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/%E8%99%9A%E5%87%BD%E6%95%B0/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/%E6%88%91%E7%9A%84%E5%A4%A7%E5%AD%A6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -200,7 +199,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          虚函数
+          我的大学
         </h1>
 
         <div class="post-meta">
@@ -209,16 +208,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2022-09-25 16:38:28" itemprop="dateCreated datePublished" datetime="2022-09-25T16:38:28+08:00">2022-09-25</time>
+              <time title="创建时间：2023-06-26 15:44:31 / 修改时间：17:39:30" itemprop="dateCreated datePublished" datetime="2023-06-26T15:44:31+08:00">2023-06-26</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-09-30 16:54:19" itemprop="dateModified" datetime="2022-09-30T16:54:19+08:00">2022-09-30</time>
-              </span>
 
           <br>
             <span class="post-meta-item" title="本文字数">
@@ -226,7 +219,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.2k</span>
+              <span>1.8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -245,66 +238,18 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>我们知道，动态多态是借助虚函数实现的，下面是关于虚函数的一些介绍。</p>
+        <p>谨以此文纪念我的大学时光</p>
 <span id="more"></span>
 
-<h3 id="虚函数"><a href="#虚函数" class="headerlink" title="虚函数"></a>虚函数</h3><p>通俗来讲，虚函数是在编译时，并不能确定的类函数，而是在运行时确定的。<br>独特功能：<strong>基类对象访问派生类的函数</strong>。<br>步骤</p>
-<ol>
-<li>定义基类时，函数声明为虚（virtual）</li>
-<li>派生类中，重写基类中定义为虚的函数。</li>
-<li>声明基类指针指向派生类对象。调用虚函数</li>
-</ol>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">      <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span></span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">          cout&lt;&lt;<span class="string">&quot;A::foo() is called&quot;</span>&lt;&lt;endl;</span><br><span class="line">      &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span>:</span><span class="keyword">public</span> A</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">      <span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span></span></span><br><span class="line"><span class="function">      </span>&#123;</span><br><span class="line">          cout&lt;&lt;<span class="string">&quot;B::foo() is called&quot;</span>&lt;&lt;endl;</span><br><span class="line">      &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    A *a = <span class="keyword">new</span> <span class="built_in">B</span>();</span><br><span class="line">    a-&gt;<span class="built_in">foo</span>();   <span class="comment">// 在这里，a虽然是指向A的指针，但是被调用的函数(foo)却是B的!</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="纯虚函数"><a href="#纯虚函数" class="headerlink" title="纯虚函数"></a>纯虚函数</h3><p>纯虚函数可使当前类变成<strong style="color:red;">抽象类</strong>，<mark>禁止该类被实例化</mark>，并要求其非抽象类的派生类<mark>必须重写</mark>该纯虚函数。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">func</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
-
-<p>定义纯虚函数时，不需要定义函数的实现部分。「= 0」 表明程序员将不定义该函数，函数声明是为派生类保留一个位置。「= 0」 的本质是将指向函数体的指针定为$nullptr$</p>
-<h4 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h4><ol>
-<li>类中一旦出现纯虚函数，就不可实例化了（抽象类）；</li>
-<li>纯虚函数有函数体，但最终还是要被派生类重写，在派生类的函数中可以调用基类中有函数体的纯虚函数；</li>
-<li>为使派生类能完全释放资源，基类析构函数必须声明为虚函数。否则，在用基类指针new一个派生类对象后，delete该指针就只能回收与基类相关的资源，造成内存泄漏；</li>
-<li>纯虚析构函数必须要有函数体。</li>
-</ol>
-<h3 id="抽象类"><a href="#抽象类" class="headerlink" title="抽象类"></a>抽象类</h3><p>存在纯虚函数的类，叫抽象类。</p>
-<ol>
-<li>抽象类不能用作参数类型、函数返回类型或显式转换的类型。</li>
-<li>可以定义指向抽象类的指针和引用，此指针可以指向它的派生类，进而实现多态性。</li>
-<li>抽象类只能用作其他类的基类，不能建立抽象类对象。</li>
-</ol>
-<h3 id="虚函数表"><a href="#虚函数表" class="headerlink" title="虚函数表"></a>虚函数表</h3><p>对象创建时,编译器对<code>vptr</code>进行初始化，只有当对象构造完全结束后<code>vptr</code>的指向才最终确定。<br>使用虚函数时，对象会多出4字节的虚指针，指针指向类的虚函数表。<strong>对象不包含虚函数表，只有虚指针，类才包含虚函数表。</strong><br>虚表中的指针顺序，取决于类中虚函数的<strong style="color:rgb(0, 191, 166);">声明顺序</strong>。<br>虚函数表在实例化对象创建时创建。</p>
-<h3 id="虚指针-amp-虚表"><a href="#虚指针-amp-虚表" class="headerlink" title="虚指针&amp;虚表"></a>虚指针&amp;虚表</h3><p>vptr &amp; vtbl。只要类中有虚函数，类对象内部就会有出现<mark>一个</mark>指针。虚指针用来指向虚表中的<mark>函数指针</mark>指向虚函数的地址。未重写的虚函数，基类和派生类共用。重写了的，各自虚表中指向重写后的地址。<br>通过指针，向上转型，指向虚函数。<code>(*p-&gt;vptr[n])(p)</code></p>
-<h3 id="相关面试题"><a href="#相关面试题" class="headerlink" title="相关面试题"></a>相关面试题</h3><blockquote>
-<p>动态分配堆上内存的时候，析构函数必须是虚函数。</p>
-</blockquote>
-<p>动态的去分配堆区的空间时，无法在程序运行结束自动释放内存。若基类指针指向派生类，然后基类指针调用delete方法，只能释放基类的内存，进而导致内存泄露。<br>析构函数定义成虚函数，基类指针调用delete方法，会先调用派生类的析构函数，然后自动调用基类的析构函数。</p>
-<blockquote>
-<p>友元函数不能为虚函数</p>
-</blockquote>
-<p>友元函数，<mark>不属于</mark>这个类的成员函数。而且虚函数的目的是通过基类对象访问派生类实现的函数，友元函数不是不是成员函数，更无继承关系。</p>
-<blockquote>
-<p>多继承</p>
-</blockquote>
-<p>多继承下有多个虚表。多个基类之间（类内部按声明顺序）的虚函数，按照继承的顺序，存放虚函数指针。<br>虚函数表中，派生类<mark>重写</mark>的虚函数<strong style="color:orange;">替换了基类虚函数指针</strong>，并指向了派生类的函数实现。</p>
-<blockquote>
-<p>哪些函数不支持声明为虚函数</p>
-</blockquote>
-<p>非成员函数、静态成员函数、内联成员函数、构造函数、友元函数。</p>
-<ul>
-<li>非成员函数：非成员函数只能重载，不能重写。编译器会在编译时绑定函数。</li>
-<li>构造函数：构造函数用来创建一个新的对象,而虚函数的运行是建立在对象的基础上,在构造函数执行时,对象尚未形成,所以不能将构造函数定义为虚函数。</li>
-<li>内联函数：内联函数就是为了在代码中直接展开，减少函数调用花费的代价，虚函数是为了在继承后对象能够准确的执行自己的动作，这是不可能统一的。</li>
-<li>静态成员函数： 静态成员函数对于每个类来说只有一份代码，所有的对象都共享这一份代码，他也没有要动态绑定的必要性。</li>
-<li>友元函数： C++不支持友元函数的继承，对于没有继承特性的函数没有虚函数的说法。</li>
-</ul>
-<blockquote>
-<p>为什么构造函数调用虚函数不能实现多态？</p>
-</blockquote>
-<p>子类构造函数要先调用父类构造函数，虚函数实现重载靠的是动态绑定。<br>如果构造函数中的虚函数为动态绑定(多态)，则子类在构造时，子类的构造函数先调用父类构造函数，而此时父类构造函数不能调用子类的重载函数（子类还未创建，没有虚表。）</p>
-<blockquote>
-<p>怎么通过虚函数实现的多态？(内存、寻址等)</p>
-</blockquote>
-<p>通过对象内存中的vptr找到虚函数表vtbl，接着通过vtbl找到对应虚函数的实现区域并进行调用。<br>类的成员函数存在于<code>.text segment</code>段，为类的所有对象公有。(不管创建多少个对象)成员变量存在于<code>.stack/.heap</code>中供类对象独有。<br>含有虚函数的类对象除了存储成员变量外，还存储一个虚指针<code>vptr</code>，这个虚指针指向一张虚表<code>vtbl</code>。<code>vtbl</code>中存的数据为<strong>函数指针</strong>，存储着虚函数调用的具体函数所在的地址。</p>
+<h2 id="生涯规划"><a href="#生涯规划" class="headerlink" title="生涯规划"></a>生涯规划</h2><p>步入大学没有了之前那种固定的长远目标，似乎未来充满着无限可能，却又无从下手。刚入学的时候，对自己的未来还没有任何规划，但学校里的人、事都在烘托着一种「读研是大学的最好出路」的氛围：保研名校的学长学姐系列讲座；升学率宣传；同学、家长的学历崇拜……似乎大学和之前的阶段一样，目的是拿到下一阶段的入场券。刚入学时，每天都能听到学长学姐的保研、考研、求职的光辉事迹，但其实只是当个故事听，也并没有考虑过将来自己想做什么。刚摆脱高中那种压抑的环境（每天12点睡5点起，还因为午休时间午睡被请过家长），每天都在报复性的玩乐。教务处排课会避开周三下午，每周三下午我都能狂睡3、4个小时。</p>
+<p>开学不久认识了两个学长，也是整个大一关系比较好的唯一的两个。A学长当时大四，他从大二开始就以实验室为家，寒暑假也要泡在实验室里做实验（甚至有一年过年都没回），最终成功保研；B学长当时研一，大学吃喝玩乐三年多，最后考研上岸。我每天接受的熏陶也都是要好好学习，准备考研。这时我的大学目标是<strong>保研</strong>。为了这个目标，大一上学期非常刻苦的学习了一学期。秋季学期结束后，排名大概在20%左右，基本上这样持续下去的话，也能够达到保研的要求。大一下学期疫情爆发，在家里上了一学期的网课，也是这个信念支撑这我每天认真学习。快期末的时候，学校的老师似乎清楚线上教学的问题，许多课程的考核标准降低了很多，这让基础相对比较扎实的我许多课程都取得了相对不错的成绩，排名一路冲到了前5%。大一结束学院进行专业分流，当时学的是机械，唯一的一门专业课是工图（我四年分最低的几门课之一），学不会工图的我对这个学院的专业产生畏惧，觉得自己学不会这个方向。于是，选择了转专业。当时互联网行业很热门，于是选择了软件学院，但是我的排名只是刚触碰到转专业的底线，又怕自己被刷下去被迫留在原学院。于是选择了软件学院的一个冷门的专业——信息安全。</p>
+<p>刚转过去的时候，看到了新的排名：50%。此时的我每天都很焦虑，因为我很难再触碰到那个保研的最低排名要求（本身并没有相关基础，而且和要求存在较大差距）。虽然很焦虑但生活还要继续，学习时间更长了，每天都憋在图书馆里学习。这样持续了一年后，排名也并没有提高多少。而且这期间目睹了很多同学混分的事（因为更多的考核是实验，很多排名靠前的实验直接用学长学姐的，然后写一篇特别优质的实验报告），我付出的比他们要多很多，得到的却无法与之比拟。</p>
+<p>大三上学期，虽然大二发生的事动摇了我保研的决心，但我的目标还是读研。因为目标变成了<strong>考研</strong>，不必再在意那些课程的成绩。这也使得我的生活丰富了许多，每天读书、看电影、打游戏（因为疫情封校只能在校园里活动）非常快乐。那段时光是我勉强能算得上真正意义上的大学时光的几个月。</p>
+<p>大三上学期末的时候，开始真正的审视自己的未来问题（以前只是一个思想的萌芽并不清楚为什么要读研，只是大家都在做这件事），这次是真正的思考这个问题：我为什么要读研？思考了好久，发现我只是个俗人，我的目标只有金钱。像什么学术追求、职业方向、技术追求统统没有，<strong>我只在乎钱</strong>，给我一万五的月薪让我扫垃圾我都能干一辈子。想了一下，就算读研出来刚入职时月薪高3k，这三年的差价也很难在三五年内持平，更何况我三年也未必没有涨薪。这时就正式的放弃了读研的想法。此时只想着「打工不仅能致富，还能交友娶媳妇」。调研了一下网络安全行业，发现网安的待遇比起开发要低很多，于是目标就定为了开发岗。这一年半来接触过的也就只有C++，觉得这个还略微有点基础就开始准备C++相关的知识。</p>
+<p>在大三下学期开学前以及大三下前两个月这段时间里都在准备C++后端所需要的知识：C++2.0、算法、网络、操作系统。当时的我觉得自己也就算半个科班（只学过计算机基础课），基础还不是很扎实，能进互联网大厂的唯一机会也就是实习转正。因而在3、4月份开始投实习时就没有投过非互联网行业的开发岗和互联网小厂。可惜心比天高，命比纸薄。最终并没有找到一份互联网大厂C++开发相关的实习，选择了去网安行业一探究竟。实习了一段时间，网安行业也成功的让我觉得当初选择走开发岗是正确的。</p>
+<p>实习结束之后，8月份开始秋招。秋招了大概3个月，结果还算满意。（最近看到了学院的就业数据，对自己更加满意了。）</p>
+<p>现阶段的生涯规划——活过试用期。</p>
+<h2 id="情感"><a href="#情感" class="headerlink" title="情感"></a><del>情感</del></h2><p>下次一定</p>
 
     </div>
 
@@ -323,8 +268,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/CPP/" rel="tag"><i class="fa fa-tag"></i> CPP</a>
-              <a href="/tags/%E5%85%AB%E8%82%A1/" rel="tag"><i class="fa fa-tag"></i> 八股</a>
+              <a href="/tags/%E5%85%B3%E4%BA%8E%E6%88%91/" rel="tag"><i class="fa fa-tag"></i> 关于我</a>
           </div>
 
         
@@ -333,13 +277,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/TCP%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%BB%BA%E7%AB%8B%E4%B8%8E%E6%96%AD%E5%BC%80/" rel="prev" title="TCP连接的建立与断开">
-      <i class="fa fa-chevron-left"></i> TCP连接的建立与断开
+    <a href="/%E6%82%96%E8%AE%BA13/" rel="prev" title="悖论13">
+      <i class="fa fa-chevron-left"></i> 悖论13
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2022-09%E6%9C%88%E5%BA%A6%E6%80%BB%E7%BB%93/" rel="next" title="2022-09月度总结">
-      2022-09月度总结 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -398,7 +339,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E5%87%BD%E6%95%B0"><span class="nav-text">虚函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%AF%E8%99%9A%E5%87%BD%E6%95%B0"><span class="nav-text">纯虚函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E7%82%B9"><span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%BD%E8%B1%A1%E7%B1%BB"><span class="nav-text">抽象类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E5%87%BD%E6%95%B0%E8%A1%A8"><span class="nav-text">虚函数表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E6%8C%87%E9%92%88-amp-%E8%99%9A%E8%A1%A8"><span class="nav-text">虚指针&amp;虚表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98"><span class="nav-text">相关面试题</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E6%B6%AF%E8%A7%84%E5%88%92"><span class="nav-text">生涯规划</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%83%85%E6%84%9F"><span class="nav-text">情感</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
