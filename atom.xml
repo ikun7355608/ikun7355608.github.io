@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2023-10-12T16:17:11.310Z</updated>
+  <updated>2023-10-16T14:02:18.701Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,25 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>29h速通骑行</title>
+    <link href="http://example.com/%E8%BD%A6%E7%A5%B8/"/>
+    <id>http://example.com/%E8%BD%A6%E7%A5%B8/</id>
+    <published>2023-10-16T13:46:43.000Z</published>
+    <updated>2023-10-16T14:02:18.701Z</updated>
+    
+    <content type="html"><![CDATA[<p>一辆刚从店里被购买的自行车，在存活了29个小时之后成功的化身为事故车。</p><span id="more"></span><p>2023年10月15日下午4点18分，一辆喜德盛逐日700以2398元的价格崭新出厂，可惜它沉浸于被赎身的喜悦没超过30h小时便遭受洗礼。</p><p>10月16日晚9点左右，刚出厂的逐日700正在大街上快乐的飞驰，就在它行驶到三丫坡门口附近时，迎面出现了一辆逆行的电动车。虽然逐日700身上装备了照明工具，但那微弱的光源不足以让其他人在带有些许灯光的黑夜中及时发现它并躲避。虽然逐日700及时发现了电动车并进行了躲避，但当电动车察觉到面前的黑暗中有一丝微弱的灯光在闪动时已乱了手脚，急忙减速并急转。在电动车不屑努力下，终于调整好了角度，进行了一次撞击。好在二者的速度都不快，人基本没事，只是某些脆弱的位置（车筐、车闸）有些变形。</p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;一辆刚从店里被购买的自行车，在存活了29个小时之后成功的化身为事故车。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="日常" scheme="http://example.com/tags/%E6%97%A5%E5%B8%B8/"/>
+    
+  </entry>
   
   <entry>
     <title>求生游戏</title>
@@ -305,9 +324,9 @@
     
     
     
-    <category term="八股" scheme="http://example.com/tags/%E5%85%AB%E8%82%A1/"/>
-    
     <category term="CPP" scheme="http://example.com/tags/CPP/"/>
+    
+    <category term="八股" scheme="http://example.com/tags/%E5%85%AB%E8%82%A1/"/>
     
   </entry>
   
@@ -388,27 +407,6 @@
     
     
     <category term="八股" scheme="http://example.com/tags/%E5%85%AB%E8%82%A1/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>static</title>
-    <link href="http://example.com/static/"/>
-    <id>http://example.com/static/</id>
-    <published>2022-09-07T08:59:23.000Z</published>
-    <updated>2022-09-07T09:00:44.836Z</updated>
-    
-    <content type="html"><![CDATA[<p><code>static</code>关键字相关知识点</p><span id="more"></span><h3 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h3><p>函数内部定义的变量，当程序执行到它的定义处时，编译器为它在栈上分配空间，函数执行结束时会释放掉他的内存。为保持变量的持久性，我们可以声明其为全局变量、全局函数。但全局函数又破坏了变量的访问范围，为了控制变量的存储方式和可见性，引入<code>static</code>关键字。</p><h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><ol><li>修饰局部变量  —  延长生命周期</li></ol><p>局部变量一般创建在栈区，将其声明为<code>static</code>会导致变量创建在全局区。全局区的变量只会在程序运行前初始化一次，其生命周期会一直延续到整个程序执行结束。</p><blockquote><p>生命周期以及存储空间发生了变化，但其作用域并没变。</p></blockquote><ol start="2"><li>修饰全局变量、函数  —  信息隐藏，对其他文件不可见。</li></ol><p>当同时编译多个文件时，所有未加 static 前缀的全局变量和函数都具有全局可见性。（可被其他文件访问）</p><p>声明为<code>static</code>后，该变量/函数仅在该文件中可见，不能被其他文件访问。</p><blockquote><p>同一工程下，不能被其他文件引用；文件外可定义同名变量/函数。</p></blockquote><ol start="3"><li>修饰类成员</li></ol><p>被<code>static</code>修饰的类成员函数、类成员变量，统一属于类的静态资源，是类实例之间共享的，不是属于此类的任何特定对象。</p><p>静态非常量数据成员在类内仅声明，只能在类外定义和初始化。</p><p><code>static</code>函数不接受<code>this</code>指针只能访问类的 <code>static </code>成员变量。(因为不属于某个具体对象)</p><blockquote><p>static 成员函数不能被 virtual 修饰(同样，因为不属于具体的某个对象)<br>虚函数的重写是通过每个对象内的虚指针去调用，而虚指针调用需要用到<code>this</code>。(<code>this</code>指针 –&gt; <code>vptr</code> –&gt;<code>vtable</code> –&gt; <code>virtual function</code>)</p></blockquote><blockquote><p>静态成员函数中不能引用非静态成员。类的非静态成员函数可以调用用静态成员函数。<br>静态的资源属于类，并没有实例化对象，没办法知道该类具体有哪些非静态的资源。而对象创建时，类有哪些成员是已知的，均可访问。</p></blockquote><h4 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h4><p>初始化只有一次，但是可以多次赋值，在主程序之前，编译器已经为其分配好了内存。</p><blockquote><p>在静态数据区，内存中所有的字节默认值都是 <code>0x00</code>，可以不用人为的初始化。</p></blockquote><p>在 C++中，初始化时在<strong>执行相关代码时才会进行初始化</strong>，主要是由于 C++引入对象后，要进行初始化必须执行相应构造函数和析构函数，在构造函数或析构函数中经常会需要进行某些程序中需要进行的特定操作，并非简单地分配内存。</p>]]></content>
-    
-    
-    <summary type="html">&lt;p&gt;&lt;code&gt;static&lt;/code&gt;关键字相关知识点&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="八股" scheme="http://example.com/tags/%E5%85%AB%E8%82%A1/"/>
-    
-    <category term="CPP" scheme="http://example.com/tags/CPP/"/>
     
   </entry>
   
