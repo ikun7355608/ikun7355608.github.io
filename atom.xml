@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2023-10-16T14:02:18.701Z</updated>
+  <updated>2023-11-17T13:44:16.631Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -17,11 +17,30 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>下班前的忙碌</title>
+    <link href="http://example.com/%E4%B8%8B%E7%8F%AD%E5%89%8D%E7%9A%84%E5%BF%99%E7%A2%8C/"/>
+    <id>http://example.com/%E4%B8%8B%E7%8F%AD%E5%89%8D%E7%9A%84%E5%BF%99%E7%A2%8C/</id>
+    <published>2023-11-17T13:16:44.000Z</published>
+    <updated>2023-11-17T13:44:16.631Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近在和一个前端老哥搭平台，这是今天下班前发生的事</p><span id="more"></span><p>这个平台大概是从一个月前开始搭的，本来所有的一切全都是我自己干（真·全栈工程师），上周接到leader需求要集成到现有平台里，就找到了当时搭现有平台的老哥。</p><p>今天下午的时候测试版本和前端老哥调试好了，剩下的只是我继续优化数据库和接口了。晚饭回来打算给接口加一个时间字段的查询功能，写完上测试环境调接口的时候发现没有最近半个月的数据。（数据库+数据同步是最先写的，保存了大概一个半月前开始的数据）</p><p>发现这个问题的我赶紧打开数据同步的机器看log，发现脚本一直在正常跑也没抛异常。然后cp了一份脚本，随意拉了组数据开始测试，发现能够正常的生成数据库的语句。继续测，发现我调数据库接口的代码写在了<code>try-catch</code>语句的异常处理部分，也就是过去每天辛辛苦苦花三个多小时下载及处理的数据，处理完直接被丢了。。。。突然想起来前段时间去培训的时候上课无聊「优化」了一下代码，优化完丢了将近2T的数据，我真棒。</p><p><img src="/%E4%B8%8B%E7%8F%AD%E5%89%8D%E7%9A%84%E5%BF%99%E7%A2%8C/pic.png" alt="pic"></p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;最近在和一个前端老哥搭平台，这是今天下班前发生的事&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="日常" scheme="http://example.com/tags/%E6%97%A5%E5%B8%B8/"/>
+    
+  </entry>
+  
+  <entry>
     <title>29h速通骑行</title>
     <link href="http://example.com/%E8%BD%A6%E7%A5%B8/"/>
     <id>http://example.com/%E8%BD%A6%E7%A5%B8/</id>
     <published>2023-10-16T13:46:43.000Z</published>
-    <updated>2023-10-16T14:02:18.701Z</updated>
+    <updated>2023-10-16T14:03:16.890Z</updated>
     
     <content type="html"><![CDATA[<p>一辆刚从店里被购买的自行车，在存活了29个小时之后成功的化身为事故车。</p><span id="more"></span><p>2023年10月15日下午4点18分，一辆喜德盛逐日700以2398元的价格崭新出厂，可惜它沉浸于被赎身的喜悦没超过30h小时便遭受洗礼。</p><p>10月16日晚9点左右，刚出厂的逐日700正在大街上快乐的飞驰，就在它行驶到三丫坡门口附近时，迎面出现了一辆逆行的电动车。虽然逐日700身上装备了照明工具，但那微弱的光源不足以让其他人在带有些许灯光的黑夜中及时发现它并躲避。虽然逐日700及时发现了电动车并进行了躲避，但当电动车察觉到面前的黑暗中有一丝微弱的灯光在闪动时已乱了手脚，急忙减速并急转。在电动车不屑努力下，终于调整好了角度，进行了一次撞击。好在二者的速度都不快，人基本没事，只是某些脆弱的位置（车筐、车闸）有些变形。</p>]]></content>
     
@@ -324,9 +343,9 @@
     
     
     
-    <category term="CPP" scheme="http://example.com/tags/CPP/"/>
-    
     <category term="八股" scheme="http://example.com/tags/%E5%85%AB%E8%82%A1/"/>
+    
+    <category term="CPP" scheme="http://example.com/tags/CPP/"/>
     
   </entry>
   
@@ -380,28 +399,6 @@
     
     <summary type="html">&lt;p&gt;本文主要是介绍力扣二叉树的构造&lt;/p&gt;
 &lt;p&gt;即，从&lt;code&gt;[x, x, x, x, x]&lt;/code&gt;为层序遍历的结果来构造一颗二叉树&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="八股" scheme="http://example.com/tags/%E5%85%AB%E8%82%A1/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>海量数据问题</title>
-    <link href="http://example.com/%E6%B5%B7%E9%87%8F%E6%95%B0%E6%8D%AE%E9%97%AE%E9%A2%98/"/>
-    <id>http://example.com/%E6%B5%B7%E9%87%8F%E6%95%B0%E6%8D%AE%E9%97%AE%E9%A2%98/</id>
-    <published>2022-09-11T08:00:46.000Z</published>
-    <updated>2022-11-09T02:01:22.110Z</updated>
-    
-    <content type="html"><![CDATA[<p>高频八股之海量数据问题 </p><blockquote><p>本文参考自<a href="https://blog.csdn.net/v_JULY_v/article/details/7382693">教你如何迅速秒杀掉：99%的海量数据面试题</a></p></blockquote><span id="more"></span><h4 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h4><p>数据量过大，而内存空间不足或短时间内无法迅速求解的问题</p><ul><li>内存空间不足  —  分治，存入多个小文件中操作</li><li>短时间不可解  —  数据结构+算法</li></ul><h4 id="基本思路"><a href="#基本思路" class="headerlink" title="基本思路"></a>基本思路</h4><p><code>分治  ===&gt;  hash  ===&gt;  求解子问题  ===&gt;  归并</code></p><h4 id="样例"><a href="#样例" class="headerlink" title="样例"></a>样例</h4><blockquote><p>现有海量日志数据，要提取出某日访问百度次数最多的那个IPv4地址<br>内存空间有限，不足以全部加载。</p></blockquote><ul><li>分治  —  IP地址范围<code>0.0.0.0 --- 255.255.255.255</code>共$2^{32}$个，根据其规律将其按地址划分(类似子网划分，在此根据掩码来划分为多个文件，以$2^8$为例，划分到$2^8$个子文件中，每个文件$2^{24} = 16M$个不同的IP地址)</li><li>hash  —  将<code>unsigned int32</code>类型的IP地址，做<code>hash(IP)%256</code>处理，划分到256个子文件中(哈希函数一定，某特定IP的多次计算得到的值一定相同，一定在同一个文件)</li><li>求解子问题  —  所求问题为最大值，如果我们对每个子问题（子文件）求最大值，则全局最大值一定在这些子问题最大值中。对每个小文件构建map，统计出现次数的最大值。</li><li>归并  —  得到多个子文件中的最大值（局部最优解）进行比较，得到全局最优解。$ File_i{Max} &gt; File_{else}Max &gt; File_{else}else$（子文件最大值中的最值 &gt; 其他子文件的最值 &gt; 其他子文件所有值）</li></ul><blockquote><p>有一个1G大小的一个文件，里面每一行是一个词，词的大小不超过16字节，返回频数最高的100个词。<br>内存限制大小1M</p></blockquote><p>解题思路与上述基本相同，此外</p><ul><li>内存限制为1M，则至少需要<code>1G/1M = 1024</code>个文件(考虑分布不均，应至少为4、5倍，合理即可)</li><li>由于返回的是最大的100个词，同样防止分布不均（高频词都在一个文件），应每个子文件都要求<code>TOP100</code></li><li>如若子文件划分过多，每个的TOP100在内存中放不下（无法直接排序）可以：<ul><li>重复上述步骤</li><li>维持一个堆，记录高频词及出现次数。依次读不同文件来维持这个堆。</li></ul></li></ul><blockquote><p>海量数据分布在100台电脑中，想个办法高效统计出这批数据的TOP10。<br>海量数据中找出重复次数最多的一个<br>上千万或上亿数据（有重复），统计其中出现次数最多的前N个数据。</p></blockquote><p>同上</p><blockquote><p>给定a、b两个文件，各存放50亿个url，每个url各占64字节，找出a、b文件共同的url。<br>内存限制是4G</p></blockquote><ul><li>分治  —  $2^8\times 5G = 5\times2^{40} = 320G &gt; 4G$，将文件划分到多个子文件中（防止分布不均应多划分几个区间，如500个）</li><li>hash  —  文件a、b分别<code>hash(url)%500</code>存入各自子文件中（采用相同的hash函数，则相同的url存在于同一类子文件，如某url在a的子文件$a_{13}$中，则如果b中也有,则一定在$b_{13}$中）</li><li>求解子问题  —  分别读子文件$a_i\qquad b_i$，对比hash值得到相同url（如先将$a_i$中的值存入hash表，然后遍历$b_i$中的值和hash表比对，相同则存在重复元素）</li><li>归并</li></ul><blockquote><p>2.5亿个整数中找出不重复的整数的个数，内存空间不足以容纳这2.5亿个整数。</p></blockquote><ul><li>方案1  —  上述解决方案仍可行。</li><li>方案2  —  <code>bitmap</code> <ul><li>观察要求，数据分为三类：没出现过、出现一次（所求）、出现多次。我们可以用<code>2bit</code>来反应其出现情况，<code>00 ===&gt;没出现过  01 ===&gt; 出现1次  10 ===&gt; 出现多次</code></li><li>我们只需要人为规定一种映射来对应其关系即可，无需存储具体数字。由于，我们可以用2bit来表示出现情况，则1Bytes大小我们可以表示四个数字的出现情况。比如<code>100</code>即第<code>[100/4]</code>Bytes的第<code>[100%4 * 2]</code>和 <code>[100%4  * 2 + 1]</code>两位。利用<code>移位</code>及<code>&amp;</code>操作即可得到其值。（<code>bitmap[25] &gt;&gt; 6</code>）</li><li>理论原值存储使用空间<code>0.25G*4Bytes = 1GB</code>，实际使用空间<code>0.25G * 2bit = 64MB</code></li></ul></li></ul><blockquote><p>5亿个int型整数，找中位数</p></blockquote><p>按照前面的方案，我们可以将这些数据划分为多个子区域，然后再去寻找中位数。关于<strong>如何划分子区域</strong>，还能够让其保持一个相对顺序：</p><ul><li><p>首先，我们判断最高位，根据最高位为<code>1 or 0</code>可以分为两个子数组</p></li><li><p>再此基础上判断次高位为<code>1 or 0</code>再次划分</p></li><li><p>至此，我们有4个区间<code>0b11XXXXX  0b10XXXXX  0b01XXXXX  0b00XXXXX</code>，分组间的大小关系显而易见。</p></li><li><p>借此思路，我们可以直接根据前<code>X</code>位的值，将其划分为$2^X$个子文件，然后根据中位数（第K顺序统计量）所在的角标来判断其应该处于哪个子文件，然后在子文件中去排序、查找。</p></li></ul><blockquote><p>给40亿个不重复的unsigned int的整数，没排过序的，然后再给一个数，如何快速判断这个数是否在那40亿个数当中</p></blockquote><ul><li>方案1  —  上述<code>bitmap</code>方案，每个数字仅需要一位即可（只需判断存在不存在）</li><li>方案2  —  上述子区域划分方案</li></ul>]]></content>
-    
-    
-    <summary type="html">&lt;p&gt;高频八股之海量数据问题 &lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;本文参考自&lt;a href=&quot;https://blog.csdn.net/v_JULY_v/article/details/7382693&quot;&gt;教你如何迅速秒杀掉：99%的海量数据面试题&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;</summary>
     
     
     
