@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2023-12-31T16:08:39.359Z</updated>
+  <updated>2024-04-08T13:14:31.379Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,25 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>理解了有案底的人的痛苦</title>
+    <link href="http://example.com/%E7%90%86%E8%A7%A3%E4%BA%86%E6%9C%89%E6%A1%88%E5%BA%95%E7%9A%84%E4%BA%BA%E7%9A%84%E7%97%9B%E8%8B%A6/"/>
+    <id>http://example.com/%E7%90%86%E8%A7%A3%E4%BA%86%E6%9C%89%E6%A1%88%E5%BA%95%E7%9A%84%E4%BA%BA%E7%9A%84%E7%97%9B%E8%8B%A6/</id>
+    <published>2024-04-08T12:53:15.000Z</published>
+    <updated>2024-04-08T13:14:31.379Z</updated>
+    
+    <content type="html"><![CDATA[<p>前段时间搭了个新服务，把现有的服务搞崩了十几个小时。前几天突然服务又崩掉了，崩掉半小时内大概四五个人来找我问是不是我搞的，我说不是我，但没人信的。在大家半信半疑的目光中我踏上了寻找真凶的路途，经历了几个小时的操作，终于抓到了真凶让我洗脱了嫌疑。大概有案底的人每天也会像这样面临着种种质疑吧。</p><span id="more"></span>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;前段时间搭了个新服务，把现有的服务搞崩了十几个小时。前几天突然服务又崩掉了，崩掉半小时内大概四五个人来找我问是不是我搞的，我说不是我，但没人信的。在大家半信半疑的目光中我踏上了寻找真凶的路途，经历了几个小时的操作，终于抓到了真凶让我洗脱了嫌疑。大概有案底的人每天也会像这样面临着种种质疑吧。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="日常" scheme="http://example.com/tags/%E6%97%A5%E5%B8%B8/"/>
+    
+  </entry>
   
   <entry>
     <title>银瓶山</title>
@@ -386,25 +405,6 @@
     <category term="八股" scheme="http://example.com/tags/%E5%85%AB%E8%82%A1/"/>
     
     <category term="CPP" scheme="http://example.com/tags/CPP/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>TCP连接的建立与断开</title>
-    <link href="http://example.com/TCP%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%BB%BA%E7%AB%8B%E4%B8%8E%E6%96%AD%E5%BC%80/"/>
-    <id>http://example.com/TCP%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%BB%BA%E7%AB%8B%E4%B8%8E%E6%96%AD%E5%BC%80/</id>
-    <published>2022-09-20T06:41:57.000Z</published>
-    <updated>2023-07-07T09:48:12.897Z</updated>
-    
-    <content type="html"><![CDATA[<p>本文主要是「三次握手与四次挥手」相关的一些问题</p><span id="more"></span><h3 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h3><ul><li>初始，客户端处于<code>close</code>状态，服务器处于<code>listen</code>状态</li><li>第一次握手  —  客户端向服务器端发送一个<code>SYN</code>位，切换状态至<code>SYN_SENT</code>。</li><li>第二次握手  —  服务器收到<code>SYN</code>报文，向客户端回一个确认报文<code>ACK</code>，切换状态至<code>SYN_REVD</code>；同时，发送自己的<code>SYN</code>报文进行应答。</li><li>第三次握手  —  客户端收到<code>SYN</code>报文后，发送<code>ACK</code>报文给服务器。同时，自身状态切换至<code>established</code></li><li>服务器端收到<code>ACK</code>报文后，切换自身状态为<code>established</code></li></ul><h3 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h3><ul><li>客户端、服务器都处于<code>established</code>状态，进行数据传输。</li><li>第一次挥手  —  客户端发送一个<code>FIN</code>位，表示不再发送请求。同时，状态切换至<code>FIN_WAIT_1</code></li><li>第二次挥手  —  服务器收到客户端的结束请求，发送一个<code>ACK</code>位，表示已收到客户端报文。同时，服务器切换状态为<code>CLOSE_WAIT</code></li><li>客户端收到第二次挥手的报文后，切换自身状态为<code>FIN_WAIT_2</code></li><li>第三次挥手  —  服务器传完数据后，向客户端发送结束报文<code>FIN</code>位，进入<code>LAST_ACK</code>状态。</li><li>第四次挥手  —  客户端收到报文后，发送<code>ACK</code>进行应答。同时切换自身状态为<code>TIME_WAIT</code></li><li>服务器收到<code>ACK</code>报文后，关闭连接。切换为<code>CLOSE</code>状态</li><li>客户端在发送第四次握手后等待<code>2MSL</code>切换为<code>CLOSE</code>状态，关闭连接。</li></ul><h3 id="相关问题"><a href="#相关问题" class="headerlink" title="相关问题"></a>相关问题</h3><h4 id="为什么握手三次"><a href="#为什么握手三次" class="headerlink" title="为什么握手三次"></a>为什么握手三次</h4><blockquote><p>确认双方都能发送、接收数据。</p></blockquote><ul><li>第一次握手  —  服务器端知道客户端可以发送数据</li><li>第二次握手  —  客户端知道服务器端可以发送数据、可以接受数据。</li><li>第三次握手  — 服务器端知道客户端可以接收数据</li></ul><h4 id="FYN泛洪"><a href="#FYN泛洪" class="headerlink" title="FYN泛洪"></a>FYN泛洪</h4><p>利用三次握手的特性，攻击者疯狂发送第一次握手的数据包，收到服务器第二次握手数据包后，并<strong>不会回</strong>第三次握手数据包。服务器收不到相应的ACK位一直重发第二次握手的数据包，最终导致服务器资源耗尽。</p><h4 id="SYN-Cookie"><a href="#SYN-Cookie" class="headerlink" title="SYN Cookie"></a>SYN Cookie</h4><p>为了防止服务器拥有过多上述的半连接状态，在服务器收到第一次握手的数据后，并不会分配资源。而是利用客户端的<code>SYN</code>值计算一个<code>Cookie</code>保存在第二次握手的报文中，返回给客户端，等服务器收到第三次握手的数据包后，根据<code>Cookie</code>值检查报文的合法性。如果合法再分配资源</p><h4 id="TIME-WAIT"><a href="#TIME-WAIT" class="headerlink" title="TIME_WAIT"></a>TIME_WAIT</h4><blockquote><p>防止第四次挥手丢包。</p></blockquote><p>如果客户端发送完第四次挥手数据后，直接切换至<code>CLOSE</code>状态，第四次挥手数据包丢包时，服务器超时重传第三次挥手数据包。此时如果有新的TCP连接重启这个地址信息的话，处于三次握手阶段，客户端发起的是<code>SYN</code>请求，而服务器所等待的是<code>ACK</code>应答。此时会导致发送<code>RST</code>重建连接。</p><h4 id="2MSL"><a href="#2MSL" class="headerlink" title="2MSL"></a>2MSL</h4><p>在<code>TIME_WAIT</code>防止丢包时，客户端从<code>TIME_WAIT</code>切换至<code>CLOSE</code>需要等待<code>2MSL</code></p><blockquote><p>MSL  报文的最大生存时间</p></blockquote><p>如果第三次挥手的包丢包，则第三次挥手从发送到重发，经过<code>2MSL</code>，此时对于客户端来说，已经过去的时间小于等于<code>1MSL</code>（发送第四次挥手数据包，过程中丢包），而后接收到重发的第三次握手数据包的时间小于等于<code>1MSL</code>。即，客户端等待<code>2MSL</code>未收到<code>FIN</code>（第三次挥手）则能够确认服务器已经收到第四次挥手数据包。</p><p>此外，经过<code>2MSL</code>后，与该次连接相关的所有报文，都会超过生命周期。防止提前关闭客户端时，部分报文还存活，从而影响新的连接。</p>]]></content>
-    
-    
-    <summary type="html">&lt;p&gt;本文主要是「三次握手与四次挥手」相关的一些问题&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="八股" scheme="http://example.com/tags/%E5%85%AB%E8%82%A1/"/>
     
   </entry>
   
